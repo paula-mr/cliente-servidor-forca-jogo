@@ -36,17 +36,17 @@ int main(int argc, char **argv) {
 	}
 
 	char addrstr[BUFSZ];
-	addrtostr(addr, addrstr, BUFSZ);
+	addrtostr(address, addrstr, BUFSZ);
 	printf("Conectado em %s\n", addrstr);
 
 	char buffer[BUFSZ];
-	memset(buf, 0, BUFSZ);
+	memset(buffer, 0, BUFSZ);
 
 	unsigned total = 0;
 	while(1) {
-		count = recv(s, buf + total, BUFSIZE - total, 0);
+		count = recv(socket, buf + total, BUFSZ - total, 0);
 		if (count == 0) {
-			printf("Conexão fechada.")
+			printf("Conexão fechada.");
 			break;
 		}
 		total += count;
