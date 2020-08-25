@@ -11,7 +11,12 @@
 
 #define BUFSZ 1024
 
-void validateArgs(int argc);
+void validateArgs(int argc) {
+    if (argc < 3) {
+        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
+        exit(EXIT_FAILURE);
+    }
+}
 
 int main(int argc, char **argv) {
 	validateArgs(argc);
@@ -66,11 +71,4 @@ int main(int argc, char **argv) {
     }
 
 	exit(EXIT_SUCCESS);
-}
-
-void validateArgs(int argc) {
-    if (argc < 3) {
-        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
-        exit(EXIT_FAILURE);
-    }
 }
