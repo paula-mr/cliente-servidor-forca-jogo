@@ -11,15 +11,11 @@
 
 #define BUFSZ 1024
 
-void validateArgs(int argc) {
-    if (argc < 3) {
+int main(int argc, char **argv) {
+	if (argc < 3) {
         printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
         exit(EXIT_FAILURE);
     }
-}
-
-int main(int argc, char **argv) {
-	validateArgs(argc);
 
 	struct sockaddr_storage storage;
 	if (addressParse(argv[1], argv[2], &storage) != 0) {
