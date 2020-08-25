@@ -1,0 +1,74 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+#include "common.h"
+
+#define BUFSZ 1024
+
+int main(int argc, char **argv) {
+	validateArgs(argc);
+	}
+
+    struct sockaddr_storage storage;
+	if (initializeServer(argv[1], argv[2], &storage) != 0) {
+		printf("Argumentos passados incorretos. Necessário especificar tipo de endereço e porta.");
+        exit(EXIT_FAILURE);
+	}
+
+	int socket = socket(storage.ss_family, SOCK_STREAM, 0);
+	if (socket == -1) {
+		printf("Erro ao inicializar socket.");
+		exit(EXIT_FAILURE);
+	}
+
+    struct sockaddr *address = (struct sockaddr *)(storage);
+    if (bind(socket, address, sizeof(storage)) != 0) {
+        printf("Erro ao realizar bind do servidor.");
+		exit(EXIT_FAILURE);
+    }
+
+    if (listen(socket, 10) != 0) {
+        printf("Erro ao realizar escutar requisições.");
+		exit(EXIT_FAILURE);
+    }
+
+    char addrstr[BUFSZ];
+	addrtostr(addr, addrstr, BUFSZ);
+	printf("Bound em %s\n", addrstr);
+
+    while(1) {
+        struct sockaddr_storage = clientStorage;
+        struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
+
+        int clientSocket = accept(s, clientAddress, sizeof(clientStorage));
+
+        if (clientSocket == -1) {
+            printf("Erro ao conectar com o cliente.");
+		    exit(EXIT_FAILURE);
+        }
+
+        char clientAddrstr[BUFSZ];
+        addrtostr(clientAddress, clientAddrstr, BUFSZ);
+        printf("Bound em %s\n", clientAddrstr);
+
+        char buffer[BUFSZ];
+        memset(buffer, 0, BUFSZ);
+        size_t count = recv(clientSocket, buf, BUFSZ, 0);
+        printf(buffer);
+    }
+
+	exit(EXIT_SUCCESS);
+}
+
+void validateArgs(int argc) {
+    if (argc < 3) {
+        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
+        exit(EXIT_FAILURE);
+    }
+}
