@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <arpa/inet.h>
+#include "common.h"
 
 void logexit(const char *msg) {
 	perror(msg);
