@@ -11,9 +11,10 @@
 
 #define BUFSZ 1024
 
+void validateArgs(int argc);
+
 int main(int argc, char **argv) {
 	validateArgs(argc);
-	}
 
     struct sockaddr_storage storage;
 	if (initializeServer(argv[1], argv[2], &storage) != 0) {
