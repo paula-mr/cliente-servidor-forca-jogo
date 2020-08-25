@@ -23,14 +23,14 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
 	}
 
-	int socket = socket(storage.ss_family, SOCK_STREAM, 0);
-	if (socket == -1) {
+	int sock = socket(storage.ss_family, SOCK_STREAM, 0);
+	if (sock == -1) {
 		printf("Erro ao inicializar socket.");
 		exit(EXIT_FAILURE);
 	}
 
 	struct sockaddr *address = (struct sockaddr *)(storage);
-	if (connect(socket, address, sizeof(storage)) != 0) {
+	if (connect(sock, address, sizeof(storage)) != 0) {
 		printf("Erro ao conectar ao servidor.");
 		exit(EXIT_FAILURE);
 	}
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
 	unsigned total = 0;
 	while(1) {
-		count = recv(socket, buf + total, BUFSZ - total, 0);
+		size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
 		if (count == 0) {
 			printf("Conexão fechada.");
 			break;
