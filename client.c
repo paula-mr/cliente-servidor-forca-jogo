@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     }
 
 	struct sockaddr_storage storage;
-	if (addressParse(argv[1], argv[2], &storage) != 0) {
+	if (addrparse(argv[1], argv[2], &storage) != 0) {
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
         exit(EXIT_FAILURE);
 	}

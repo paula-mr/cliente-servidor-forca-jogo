@@ -3,26 +3,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
+#include <arpa/inet.h>
 
 void logexit(const char *msg) {
 	perror(msg);
 	exit(EXIT_FAILURE);
 }
 
-int addressParse(const char *addrstr, const char *portstr,
+int addrparse(const char *addrstr, const char *portstr,
               struct sockaddr_storage *storage) {
     if (addrstr == NULL || portstr == NULL) {
         return -1;
     }
 
-    uint16_t port = (uint16_t)atoi(portstr); 
+    uint16_t port = (uint16_t)atoi(portstr); // unsigned short
     if (port == 0) {
         return -1;
     }
-    port = htons(port); 
+    port = htons(port); // host to network short
 
-    struct in_addr inaddr4; 
+    struct in_addr inaddr4; // 32-bit IP address
     if (inet_pton(AF_INET, addrstr, &inaddr4)) {
         struct sockaddr_in *addr4 = (struct sockaddr_in *)storage;
         addr4->sin_family = AF_INET;
@@ -31,11 +31,12 @@ int addressParse(const char *addrstr, const char *portstr,
         return 0;
     }
 
-    struct in6_addr inaddr6;
+    struct in6_addr inaddr6; // 128-bit IPv6 address
     if (inet_pton(AF_INET6, addrstr, &inaddr6)) {
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)storage;
         addr6->sin6_family = AF_INET6;
         addr6->sin6_port = port;
+        // addr6->sin6_addr = inaddr6
         memcpy(&(addr6->sin6_addr), &inaddr6, sizeof(inaddr6));
         return 0;
     }
@@ -43,7 +44,7 @@ int addressParse(const char *addrstr, const char *portstr,
     return -1;
 }
 
-void addressToString(const struct sockaddr *addr, char *str, size_t strsize) {
+void addrtostr(const struct sockaddr *addr, char *str, size_t strsize) {
     int version;
     char addrstr[INET6_ADDRSTRLEN + 1] = "";
     uint16_t port;
@@ -70,16 +71,15 @@ void addressToString(const struct sockaddr *addr, char *str, size_t strsize) {
     if (str) {
         snprintf(str, strsize, "IPv%d %s %hu", version, addrstr, port);
     }
-    
 }
 
-int initializeServer(const char *proto, const char *portstr,
+int server_sockaddr_init(const char *proto, const char *portstr,
                          struct sockaddr_storage *storage) {
-    uint16_t port = (uint16_t)atoi(portstr);
+    uint16_t port = (uint16_t)atoi(portstr); // unsigned short
     if (port == 0) {
         return -1;
     }
-    port = htons(port);
+    port = htons(port); // host to network short
 
     memset(storage, 0, sizeof(*storage));
     if (0 == strcmp(proto, "v4")) {

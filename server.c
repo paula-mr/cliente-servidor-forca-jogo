@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     }
 
     struct sockaddr_storage storage;
-	if (initializeServer(argv[1], argv[2], &storage) != 0) {
+	if (server_sockaddr_init(argv[1], argv[2], &storage) != 0) {
 		printf("Argumentos passados incorretos. Necessário especificar tipo de endereço e porta.");
         exit(EXIT_FAILURE);
 	}
