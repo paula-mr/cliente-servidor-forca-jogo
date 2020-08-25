@@ -24,7 +24,7 @@ int addressParse(const char *addrstr, const char *portstr,
 
     struct in_addr inaddr4; 
     if (inet_pton(AF_INET, addrstr, &inaddr4)) {
-        struct sockaddr_in4 *addr4 = (struct sockaddr_in4 *)storage;
+        struct sockaddr_in *addr4 = (struct sockaddr_in *)storage;
         addr4->sin_family = AF_INET;
         addr4->sin_port = port;
         addr4->sin_addr = inaddr4;
