@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	struct sockaddr *address = (struct sockaddr *)(storage);
+	struct sockaddr *address = (struct sockaddr *)(&storage);
 	if (connect(sock, address, sizeof(storage)) != 0) {
 		printf("Erro ao conectar ao servidor.");
 		exit(EXIT_FAILURE);
