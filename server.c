@@ -1,3 +1,5 @@
+#include "common.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -6,8 +8,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-
-#include "common.h"
 
 #define BUFSZ 1024
 
@@ -45,8 +45,9 @@ int main(int argc, char **argv) {
     while(1) {
         struct sockaddr_storage = clientStorage;
         struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
+        socklen_t clientAddressLength = sizeof(cstorage);
 
-        int clientSocket = accept(s, clientAddress, sizeof(clientStorage));
+        int clientSocket = accept(s, clientAddress, &clientAddressLength);
 
         if (clientSocket == -1) {
             printf("Erro ao conectar com o cliente.");

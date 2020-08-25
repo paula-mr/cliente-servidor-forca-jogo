@@ -1,6 +1,9 @@
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
+#include <string.h>
+
+#include <arpa/inet.h>
 
 int addressParse(const char *addrstr, const char *portstr,
               struct sockaddr_storage *storage) {
