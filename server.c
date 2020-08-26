@@ -68,11 +68,12 @@ int main(int argc, char **argv) {
 
         printf("sending first message\n");
 
-        char buffer[BUFSZ];
-        sprintf(buffer, "%d%u", 1, strlen(WORD));
-        printf("%s\n", buffer);
-        printf("size: %u\n", strlen(WORD));
-        size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
+        int buffer[2];
+        buffer[0] = 1;
+        buffer[1] = strlen(WORD);
+        printf("type %d\n", buffer[0]);
+        printf("size: %u\n", buffer[1]);
+        size_t count = send(clientSocket, buffer, 2, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
