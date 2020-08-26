@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
         printf("sending first message\n");
 
-        int buffer[BUFSZ];
+        char buffer[BUFSZ];
         sprintf(buffer, "%d%d", 1, strlen(WORD));
         printf("%s\n", buffer);
         printf("size: %d\n", strlen(WORD));

@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 	addrtostr(address, addrstr, BUFSZ);
 	printf("Conectado em %s\n", addrstr);
 
-	int buffer[BUFSZ];
+	char buffer[BUFSZ];
 
 	unsigned total = 0;
 	memset(buffer, 0, BUFSZ);
@@ -57,10 +57,14 @@ int main(int argc, char **argv) {
 	printf("%s\n", buffer);
 	printf("received %u bytes\n", total);
 
-	int typeMessage = buffer[0];
-	int wordSize = buffer[1];
+	char typeMessage = buffer[0];
+	int wordSize = 0;
+	for (int i=1; i<total-1; i++) {
+		wordSize *= 10;
+		wordSize += (int) buffer[i];
+	}
 
-	printf("Received message type %d with word size %d", typeMessage, wordSize);
+	printf("Received message type %c with word size %c", typeMessage, wordSize);
 
 	exit(EXIT_SUCCESS);
 }
