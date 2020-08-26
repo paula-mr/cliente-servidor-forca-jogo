@@ -66,12 +66,13 @@ int main(int argc, char **argv) {
 	}
 	printf("\n");
 
+	char bufferMsg2[BUFSZ];
 	while (typeMessage != 4) {
-		memset(buffer, 0, BUFSZ);
+		memset(bufferMsg2, 0, BUFSZ);
 		printf("digite a letra> ");
-		fgets(buffer, BUFSZ-1, stdin);
-		size_t count = send(sock, buffer, strlen(buffer)+1, 0);
-		if (count != strlen(buffer)+1) {
+		fgets(bufferMsg2, BUFSZ-1, stdin);
+		size_t count = send(sock, bufferMsg2, strlen(bufferMsg2)+1, 0);
+		if (count != strlen(bufferMsg2)+1) {
 			logexit("send");
 		}
 	}
