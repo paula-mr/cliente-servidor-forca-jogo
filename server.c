@@ -75,15 +75,9 @@ int main(int argc, char **argv) {
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
-
-        printf("message sent");
-
-        memset(buffer, 0, BUFSZ);
-        count = recv(clientSocket, buffer, BUFSZ, 0);
-        printf("[msg] %s, %d bytes: %s\n", clientAddrstr, (int)count, buffer);
-
-
         close(clientSocket);
+        printf("message sent\n");
+        puts(buffer);
     }
 
 	exit(EXIT_SUCCESS);
