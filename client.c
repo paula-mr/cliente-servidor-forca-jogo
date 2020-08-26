@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	while(1) {
 		printf("Waiting for ack message\n");
 		memset(buffer, 0, BUFSZ);
-		count = recv(sock, buffer + total, BUFSZ - total, 0);
+		size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
 		if (count == 0) {
 			printf("Conexão fechada.");
 			break;
