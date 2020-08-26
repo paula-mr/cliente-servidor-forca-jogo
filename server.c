@@ -62,12 +62,16 @@ int main(int argc, char **argv) {
             logexit("setsockopt");
         }
 
+        char clientAddrstr[BUFSZ];
+        addrtostr(clientAddress, clientAddrstr, BUFSZ);
+        printf("Bound em %s\n", clientAddrstr);
+
         char buffer[BUFSZ];
 
         printf("sending first message");
-        
+
         sprintf(buffer, "%d%d", 1, strlen(WORD));
-        count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
+        size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
@@ -75,12 +79,9 @@ int main(int argc, char **argv) {
         printf("message sent");
 
         memset(buffer, 0, BUFSZ);
-        size_t count = recv(clientSocket, buffer, BUFSZ, 0);
+        count = recv(clientSocket, buffer, BUFSZ, 0);
         printf("[msg] %s, %d bytes: %s\n", clientAddrstr, (int)count, buffer);
 
-        char clientAddrstr[BUFSZ];
-        addrtostr(clientAddress, clientAddrstr, BUFSZ);
-        printf("Bound em %s\n", clientAddrstr);
 
         close(clientSocket);
     }
