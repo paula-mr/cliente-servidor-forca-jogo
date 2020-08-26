@@ -56,6 +56,11 @@ int main(int argc, char **argv) {
 		    exit(EXIT_FAILURE);
         }
 
+        int enable = 1;
+        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) != 0) {
+            logexit("setsockopt");
+        }
+
         char clientAddrstr[BUFSZ];
         addrtostr(clientAddress, clientAddrstr, BUFSZ);
         printf("Bound em %s\n", clientAddrstr);
