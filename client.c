@@ -40,16 +40,12 @@ int main(int argc, char **argv) {
 	printf("Conectado em %s\n", addrstr);
 
 	char buffer[BUFSZ];
-	memset(buffer, 0, BUFSZ);
-
-	printf("Waiting for ack message");
-	size_t count = recv(sock, 0, 2, 0);
-	printf("received %u bytes\n", count);
-	puts(buffer);
 
 	unsigned total = 0;
 	while(1) {
-		size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
+		printf("Waiting for ack message\n");
+		memset(buffer, 0, BUFSZ);
+		count = recv(sock, buffer + total, BUFSZ - total, 0);
 		if (count == 0) {
 			printf("Conexão fechada.");
 			break;
