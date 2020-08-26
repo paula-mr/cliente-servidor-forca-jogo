@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	}
 
 	int sock = socket(storage.ss_family, SOCK_STREAM, 0);
-	if (socket == -1) {
+	if (sock == -1) {
 		printf("Erro ao inicializar socket.");
 		exit(EXIT_FAILURE);
 	}
