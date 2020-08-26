@@ -62,6 +62,15 @@ int main(int argc, char **argv) {
             logexit("setsockopt");
         }
 
+        struct sockaddr *addr = (struct sockaddr *)(&storage);
+        if (0 != bind(s, addr, sizeof(storage))) {
+            logexit("bind");
+        }
+
+        if (0 != listen(s, 10)) {
+            logexit("listen");
+        }
+
         char clientAddrstr[BUFSZ];
         addrtostr(clientAddress, clientAddrstr, BUFSZ);
         printf("Bound em %s\n", clientAddrstr);
