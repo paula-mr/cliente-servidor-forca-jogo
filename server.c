@@ -84,16 +84,11 @@ int main(int argc, char **argv) {
             count = 0;
             memset(buffer, 0, BUFSZ);
             printf("Waiting for letter to test\n");
-            while(1) {
-                count = recv(sock, buffer + total, BUFSZ - total, 0);
-                if (count == 0) {
-                    printf("Conexão fechada.\n");
-                    break;
-                }
-                total += count;
-            }
+            
+            count = recv(sock, buffer + total, BUFSZ - total, 0);
+
             printf("%s\n", buffer);
-            printf("received %u bytes\n", total);
+            printf("received %u bytes\n", count);
 
             int typeMessage = buffer[0] - '0';
             char letter = buffer[1];

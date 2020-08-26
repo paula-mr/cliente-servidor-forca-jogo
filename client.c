@@ -43,18 +43,11 @@ int main(int argc, char **argv) {
 
 	unsigned total = 0;
 	memset(buffer, 0, BUFSZ);
-	while(1) {
-		printf("Waiting for ack message\n");
-		size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
-		if (count == 0) {
-			printf("Conexão fechada.\n");
-			break;
-		}
-		total += count;
-	}
+	printf("Waiting for ack message\n");
+	size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
 
 	printf("%s\n", buffer);
-	printf("received %u bytes\n", total);
+	printf("received %u bytes\n", count);
 
 	int typeMessage = buffer[0] - '0';
 	int wordSize = 0;
