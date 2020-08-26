@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 	int wordSize = 0;
 	for (int i=1; i<total-1; i++) {
 		wordSize *= 10;
-		wordSize += (int) buffer[i];
+		wordSize += buffer[i] - '0';
 	}
 
 	printf("Received message type %c with word size %d", typeMessage, wordSize);
