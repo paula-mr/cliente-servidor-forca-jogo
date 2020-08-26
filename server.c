@@ -82,20 +82,18 @@ int main(int argc, char **argv) {
         char bufferMsg2[BUFSZ];
         int isWordComplete = 0;
         while (!isWordComplete) {
-            unsigned total = 0;
             count = 0;
             memset(bufferMsg2, 0, BUFSZ);
             printf("Waiting for letter to test\n");
-            while(1) {
-                count = recv(sock, bufferMsg2 + total, BUFSZ - total, 0);
-                if (count == 0) {
-                    printf("Conexão fechada.\n");
-                    break;
-                }
-                total += count;
+
+            count = recv(sock, bufferMsg2, 2, 0);
+            if (count == 0) {
+                printf("Conexão fechada.\n");
+                break;
             }
+    
             printf("%s\n", bufferMsg2);
-            printf("received %u bytes\n", total);
+            printf("received %u bytes\n", count);
 
             int typeMessage = bufferMsg2[0] - '0';
             char letter = bufferMsg2[1];

@@ -59,13 +59,13 @@ int main(int argc, char **argv) {
 	}
 	printf("\n");
 
-	char bufferMsg2[BUFSZ];
+	char bufferMsg2[2];
 	while (typeMessage != 4) {
-		memset(bufferMsg2, 0, BUFSZ);
-		printf("digite a letra> ");
-		fgets(bufferMsg2, BUFSZ-1, stdin);
-		size_t count = send(sock, bufferMsg2, strlen(bufferMsg2)+1, 0);
-		if (count != strlen(bufferMsg2)+1) {
+		memset(bufferMsg2, 0, strlen(bufferMsg2));
+		bufferMsg2[0] = '1';
+		scanf(" %c", bufferMsg2[1]);
+		size_t count = send(sock, bufferMsg2, strlen(bufferMsg2), 0);
+		if (count != strlen(bufferMsg2)) {
 			logexit("send");
 		}
 	}
