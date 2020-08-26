@@ -65,8 +65,12 @@ int main(int argc, char **argv) {
 	}
 
 	printf("Received message type %c with word size %d\n", typeMessage, wordSize);
-	printf("Guess the world!\n");
-	printf("%_ *c\n", wordSize, 0);
+	printf("Guess the word!\n");
+
+	for (int i=0; i<wordSize; i++) {
+		printf("_ ");
+	}
+	printf("\n");
 
 	exit(EXIT_SUCCESS);
 }
