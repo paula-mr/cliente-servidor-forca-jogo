@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
         size_t count = recv(clientSocket, buffer, BUFSZ, 0);
         printf("[msg] %s, %d bytes: %s\n", clientAddrstr, (int)count, buffer);
 
-        sprintf(buf, "remote endpoint: %.1000s\n", clientAddrstr);
+        sprintf(buffer, "remote endpoint: %.1000s\n", clientAddrstr);
         count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
