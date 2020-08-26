@@ -71,6 +71,7 @@ int main(int argc, char **argv) {
         char buffer[BUFSZ];
         sprintf(buffer, "%d", 1);
         sprintf(buffer, "%d", strlen(WORD));
+        puts(buffer + "\n");
         size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
