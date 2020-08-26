@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 		wordSize += (int) buffer[i];
 	}
 
-	printf("Received message type %c with word size %c", typeMessage, wordSize);
+	printf("Received message type %c with word size %d", typeMessage, wordSize);
 
 	exit(EXIT_SUCCESS);
 }
