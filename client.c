@@ -39,14 +39,21 @@ int main(int argc, char **argv) {
 	addrtostr(address, addrstr, BUFSZ);
 	printf("Conectado em %s\n", addrstr);
 
-	int buffer[BUFSZ];
+	int buffer[2];
 
-	printf("Waiting for ack message\n");
 	unsigned total = 0;
-	memset(buffer, 0, BUFSZ);
-	size_t count = recv(sock, buffer, 2, 0);
+	memset(buffer, 0, 2);
+	while(1) {
+		printf("Waiting for ack message\n");
+		size_t count = recv(sock, buffer + total, 2 - total, 0);
+		if (count == 0) {
+			printf("Conexão fechada.\n");
+			break;
+		}
+		total += count;
+	}
 
-	printf("received %u bytes\n", count);
+	printf("received %u bytes\n", total);
 
 	int typeMessage = buffer[0];
 	int wordSize = buffer[1];
