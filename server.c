@@ -23,33 +23,33 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
 	}
 
-	int socket = socket(storage.ss_family, SOCK_STREAM, 0);
+	int sock = socket(storage.ss_family, SOCK_STREAM, 0);
 	if (socket == -1) {
 		printf("Erro ao inicializar socket.");
 		exit(EXIT_FAILURE);
 	}
 
-    struct sockaddr *address = (struct sockaddr *)(storage);
-    if (bind(socket, address, sizeof(storage)) != 0) {
+    struct sockaddr *address = (struct sockaddr *)(&storage);
+    if (bind(sock, address, sizeof(storage)) != 0) {
         printf("Erro ao realizar bind do servidor.");
 		exit(EXIT_FAILURE);
     }
 
-    if (listen(socket, 10) != 0) {
+    if (listen(sock, 10) != 0) {
         printf("Erro ao realizar escutar requisições.");
 		exit(EXIT_FAILURE);
     }
 
     char addrstr[BUFSZ];
-	addrtostr(addr, addrstr, BUFSZ);
+	addrtostr(address, addrstr, BUFSZ);
 	printf("Bound em %s\n", addrstr);
 
     while(1) {
-        struct sockaddr_storage = clientStorage;
+        struct sockaddr_storage clientStorage;
         struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
         socklen_t clientAddressLength = sizeof(cstorage);
 
-        int clientSocket = accept(s, clientAddress, &clientAddressLength);
+        int clientSocket = accept(sock, clientAddress, &clientAddressLength);
 
         if (clientSocket == -1) {
             printf("Erro ao conectar com o cliente.");
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 
         char buffer[BUFSZ];
         memset(buffer, 0, BUFSZ);
-        size_t count = recv(clientSocket, buf, BUFSZ, 0);
+        size_t count = recv(clientSocket, buffer, BUFSZ, 0);
         printf(buffer);
     }
 
