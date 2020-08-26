@@ -66,11 +66,12 @@ int main(int argc, char **argv) {
         addrtostr(clientAddress, clientAddrstr, BUFSZ);
         printf("Bound em %s\n", clientAddrstr);
 
-        char buffer[BUFSZ];
-        printf("sending first message");
+        printf("sending first message\n");
 
-        sprintf(buffer, "%d%d", 1, strlen(WORD));
-        size_t count = send(sock, buffer, strlen(buffer) + 1, 0);
+        char buffer[BUFSZ];
+        sprintf(buffer, "%d", 1);
+        sprintf(buffer, "%d", strlen(WORD));
+        size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
