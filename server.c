@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
         printf("sending first message\n");
 
-        char buffer[BUFSZ];
+        int buffer[BUFSZ];
         sprintf(buffer, "%d%d", 1, strlen(WORD));
         printf("%s\n", buffer);
         printf("size: %d\n", strlen(WORD));
@@ -78,7 +78,6 @@ int main(int argc, char **argv) {
         }
         close(clientSocket);
         printf("message sent\n");
-        puts(buffer);
     }
 
 	exit(EXIT_SUCCESS);

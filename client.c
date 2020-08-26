@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 	addrtostr(address, addrstr, BUFSZ);
 	printf("Conectado em %s\n", addrstr);
 
-	char buffer[BUFSZ];
+	int buffer[BUFSZ];
 
 	unsigned total = 0;
 	memset(buffer, 0, BUFSZ);
