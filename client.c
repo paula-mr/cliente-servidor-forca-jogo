@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
 	printf("Waiting for ack message");
 	size_t count = recv(sock, 0, 2, 0);
-	printf("received %u bytes\n", total);
+	printf("received %u bytes\n", count);
 	puts(buffer);
 
 	unsigned total = 0;
