@@ -69,8 +69,7 @@ int main(int argc, char **argv) {
         printf("sending first message\n");
 
         char buffer[BUFSZ];
-        sprintf(buffer, "%d", 1);
-        sprintf(buffer, "%d", strlen(WORD));
+        sprintf(buffer, "%d%d", 1, strlen(WORD));
         printf("%s\n", buffer);
         printf("size: %d\n", strlen(WORD));
         size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
