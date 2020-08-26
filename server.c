@@ -78,13 +78,13 @@ int main(int argc, char **argv) {
         }
         printf("message sent\n");
 
-        boolean isWordComplete = false
+        int isWordComplete = 0;
         while (!isWordComplete) {
             unsigned total = 0;
             count = 0;
             memset(buffer, 0, BUFSZ);
+            printf("Waiting for letter to test\n");
             while(1) {
-                printf("Waiting for letter to test\n");
                 count = recv(sock, buffer + total, BUFSZ - total, 0);
                 if (count == 0) {
                     printf("Conexão fechada.\n");
