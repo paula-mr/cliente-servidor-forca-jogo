@@ -73,8 +73,8 @@ int main(int argc, char **argv) {
         buffer[1] = strlen(WORD);
         printf("type %d\n", buffer[0]);
         printf("size: %u\n", buffer[1]);
-        size_t count = send(clientSocket, buffer, 2, 0);
-        if (count != strlen(buffer) + 1) {
+        size_t count = send(clientSocket, buffer, sizeof(buffer), 0);
+        if (count != 2) {
             logexit("send");
         }
         printf("message sent\n");
