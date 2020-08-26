@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
         sprintf(buffer, "%d", 1);
         sprintf(buffer, "%d", strlen(WORD));
         printf("%s\n", buffer);
-        printf("size: %d\n", strlen(WORD))
+        printf("size: %d\n", strlen(WORD));
         size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
