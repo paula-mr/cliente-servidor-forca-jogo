@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     while(1) {
         struct sockaddr_storage clientStorage;
         struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
-        socklen_t clientAddressLength = sizeof(cstorage);
+        socklen_t clientAddressLength = sizeof(clientStorage);
 
         int clientSocket = accept(sock, clientAddress, &clientAddressLength);
 
@@ -63,7 +63,14 @@ int main(int argc, char **argv) {
         char buffer[BUFSZ];
         memset(buffer, 0, BUFSZ);
         size_t count = recv(clientSocket, buffer, BUFSZ, 0);
-        printf(buffer);
+        printf("[msg] %s, %d bytes: %s\n", clientAddrstr, (int)count, buffer);
+
+        sprintf(buf, "remote endpoint: %.1000s\n", clientAddrstr);
+        count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
+        if (count != strlen(buffer) + 1) {
+            logexit("send");
+        }
+        close(clientSocket);
     }
 
 	exit(EXIT_SUCCESS);
