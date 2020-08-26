@@ -64,11 +64,15 @@ int main(int argc, char **argv) {
 
         char buffer[BUFSZ];
 
+        printf("sending first message");
+        
         sprintf(buffer, "%d%d", 1, strlen(WORD));
         count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
+
+        printf("message sent");
 
         memset(buffer, 0, BUFSZ);
         size_t count = recv(clientSocket, buffer, BUFSZ, 0);

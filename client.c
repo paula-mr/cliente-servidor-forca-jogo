@@ -42,6 +42,11 @@ int main(int argc, char **argv) {
 	char buffer[BUFSZ];
 	memset(buffer, 0, BUFSZ);
 
+	printf("Waiting for ack message");
+	size_t count = recv(sock, 0, 2, 0);
+	printf("received %u bytes\n", total);
+	puts(buffer);
+
 	unsigned total = 0;
 	while(1) {
 		size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
@@ -52,7 +57,7 @@ int main(int argc, char **argv) {
 		total += count;
 	}
 	close(sock);
-	
+
 	printf("received %u bytes\n", total);
 	puts(buffer);
 
