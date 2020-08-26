@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 
 #define BUFSZ 1024
+#define WORD "COMUNICACAO"
 
 int main(int argc, char **argv) {
 	if (argc < 3) {
@@ -61,20 +62,22 @@ int main(int argc, char **argv) {
             logexit("setsockopt");
         }
 
-        char clientAddrstr[BUFSZ];
-        addrtostr(clientAddress, clientAddrstr, BUFSZ);
-        printf("Bound em %s\n", clientAddrstr);
-
         char buffer[BUFSZ];
-        memset(buffer, 0, BUFSZ);
-        size_t count = recv(clientSocket, buffer, BUFSZ, 0);
-        printf("[msg] %s, %d bytes: %s\n", clientAddrstr, (int)count, buffer);
 
-        sprintf(buffer, "remote endpoint: %.1000s\n", clientAddrstr);
+        sprintf(buffer, "%d%d", 1, strlen(WORD));
         count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
+
+        memset(buffer, 0, BUFSZ);
+        size_t count = recv(clientSocket, buffer, BUFSZ, 0);
+        printf("[msg] %s, %d bytes: %s\n", clientAddrstr, (int)count, buffer);
+
+        char clientAddrstr[BUFSZ];
+        addrtostr(clientAddress, clientAddrstr, BUFSZ);
+        printf("Bound em %s\n", clientAddrstr);
+
         close(clientSocket);
     }
 

@@ -51,7 +51,8 @@ int main(int argc, char **argv) {
 		}
 		total += count;
 	}
-
+	close(sock);
+	
 	printf("received %u bytes\n", total);
 	puts(buffer);
 
