@@ -57,5 +57,10 @@ int main(int argc, char **argv) {
 	printf("%s\n", buffer);
 	printf("received %u bytes\n", total);
 
+	int typeMessage = buffer[0];
+	int wordSize = buffer[1];
+
+	printf("Received message type %d with word size %d", typeMessage, wordSize);
+
 	exit(EXIT_SUCCESS);
 }
