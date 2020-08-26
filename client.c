@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 		memset(buffer, 0, BUFSZ);
 		size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
 		if (count == 0) {
-			printf("Conexão fechada.");
+			printf("Conexão fechada.\n");
 			break;
 		}
 		total += count;
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 	close(sock);
 
 	printf("received %u bytes\n", total);
-	puts(buffer);
+	printf("%s\n", buffer);
 
 	exit(EXIT_SUCCESS);
 }
