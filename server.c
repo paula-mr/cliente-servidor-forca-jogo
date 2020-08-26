@@ -30,6 +30,11 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+    int enable = 1;
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) != 0) {
+        logexit("setsockopt");
+    }
+
     struct sockaddr *address = (struct sockaddr *)(&storage);
     if (bind(sock, address, sizeof(storage)) != 0) {
         printf("Erro ao realizar bind do servidor.");
@@ -45,6 +50,18 @@ int main(int argc, char **argv) {
 	addrtostr(address, addrstr, BUFSZ);
 	printf("Bound em %s\n", addrstr);
 
+    char buffer[BUFSZ];
+
+    printf("sending first message");
+
+    sprintf(buffer, "%d%d", 1, strlen(WORD));
+    size_t count = send(sock, buffer, strlen(buffer) + 1, 0);
+    if (count != strlen(buffer) + 1) {
+        logexit("send");
+    }
+
+    printf("message sent");
+
     while(1) {
         struct sockaddr_storage clientStorage;
         struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
@@ -57,35 +74,9 @@ int main(int argc, char **argv) {
 		    exit(EXIT_FAILURE);
         }
 
-        int enable = 1;
-        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) != 0) {
-            logexit("setsockopt");
-        }
-
-        struct sockaddr *addr = (struct sockaddr *)(&storage);
-        if (0 != bind(s, addr, sizeof(storage))) {
-            logexit("bind");
-        }
-
-        if (0 != listen(s, 10)) {
-            logexit("listen");
-        }
-
         char clientAddrstr[BUFSZ];
         addrtostr(clientAddress, clientAddrstr, BUFSZ);
         printf("Bound em %s\n", clientAddrstr);
-
-        char buffer[BUFSZ];
-
-        printf("sending first message");
-
-        sprintf(buffer, "%d%d", 1, strlen(WORD));
-        size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
-        if (count != strlen(buffer) + 1) {
-            logexit("send");
-        }
-
-        printf("message sent");
 
         memset(buffer, 0, BUFSZ);
         count = recv(clientSocket, buffer, BUFSZ, 0);
