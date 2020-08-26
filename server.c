@@ -76,8 +76,33 @@ int main(int argc, char **argv) {
         if (count != strlen(buffer) + 1) {
             logexit("send");
         }
-        close(clientSocket);
         printf("message sent\n");
+
+        boolean isWordComplete = false
+        while (!isWordComplete) {
+            unsigned total = 0;
+            count = 0;
+            memset(buffer, 0, BUFSZ);
+            while(1) {
+                printf("Waiting for letter to test\n");
+                count = recv(sock, buffer + total, BUFSZ - total, 0);
+                if (count == 0) {
+                    printf("Conexão fechada.\n");
+                    break;
+                }
+                total += count;
+            }
+            printf("%s\n", buffer);
+            printf("received %u bytes\n", total);
+
+            int typeMessage = buffer[0] - '0';
+            char letter = buffer[1];
+
+            printf("Received message type %d with letter %c\n", typeMessage, letter);
+        }
+
+
+        close(clientSocket);
     }
 
 	exit(EXIT_SUCCESS);

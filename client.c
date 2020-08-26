@@ -52,19 +52,18 @@ int main(int argc, char **argv) {
 		}
 		total += count;
 	}
-	close(sock);
 
 	printf("%s\n", buffer);
 	printf("received %u bytes\n", total);
 
-	char typeMessage = buffer[0];
+	int typeMessage = buffer[0] - '0';
 	int wordSize = 0;
 	for (int i=1; i<total-1; i++) {
 		wordSize *= 10;
 		wordSize += buffer[i] - '0';
 	}
 
-	printf("Received message type %c with word size %d\n", typeMessage, wordSize);
+	printf("Received message type %d with word size %d\n", typeMessage, wordSize);
 	printf("Guess the word!\n");
 
 	for (int i=0; i<wordSize; i++) {
@@ -72,5 +71,16 @@ int main(int argc, char **argv) {
 	}
 	printf("\n");
 
+	while (typeMessage != 4) {
+		memset(buffer, 0, BUFSZ);
+		printf("digite a letra> ");
+		fgets(buffer, BUFSZ-1, stdin);
+		size_t count = send(sock, buffer, strlen(buffer)+1, 0);
+		if (count != strlen(buffer)+1) {
+			logexit("send");
+		}
+	}
+
+	close(sock);
 	exit(EXIT_SUCCESS);
 }
