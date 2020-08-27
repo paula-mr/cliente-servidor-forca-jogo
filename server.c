@@ -79,21 +79,23 @@ int main(int argc, char **argv) {
         printf("message sent\n");
 
         int isWordComplete = 0;
+        printf("Waiting for user guess\n");
         while (!isWordComplete) {
             unsigned total = 0;
             count = 0;
             memset(buffer, 0, BUFSZ);
-            printf("Waiting for letter to test\n");
             
             count = recv(sock, buffer, BUFSZ, 0);
+            if (count == 3) {
+                printf("%s\n", buffer);
+                printf("received %u bytes\n", count);
 
-            printf("%s\n", buffer);
-            printf("received %u bytes\n", count);
+                int typeMessage = buffer[0] - '0';
+                char letter = buffer[1];
 
-            int typeMessage = buffer[0] - '0';
-            char letter = buffer[1];
+                printf("Received message type %d with letter %c\n", typeMessage, letter);
+            }
 
-            printf("Received message type %d with letter %c\n", typeMessage, letter);
         }
 
 
