@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
             memset(buffer, 0, BUFSZ);
             printf("Waiting for letter to test\n");
             
-            count = recv(sock, buffer + total, BUFSZ - total, 0);
+            count = recv(sock, buffer, BUFSZ, 0);
 
             printf("%s\n", buffer);
             printf("received %u bytes\n", count);

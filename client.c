@@ -41,17 +41,16 @@ int main(int argc, char **argv) {
 
 	char buffer[BUFSZ];
 
-	unsigned total = 0;
 	memset(buffer, 0, BUFSZ);
 	printf("Waiting for ack message\n");
-	size_t count = recv(sock, buffer + total, BUFSZ - total, 0);
+	size_t count = recv(sock, buffer, BUFSZ, 0);
 
 	printf("%s\n", buffer);
 	printf("received %u bytes\n", count);
 
 	int typeMessage = buffer[0] - '0';
 	int wordSize = 0;
-	for (int i=1; i<total-1; i++) {
+	for (int i=1; i<count-1; i++) {
 		wordSize *= 10;
 		wordSize += buffer[i] - '0';
 	}
@@ -67,7 +66,9 @@ int main(int argc, char **argv) {
 	while (typeMessage != 4) {
 		memset(buffer, 0, BUFSZ);
 		printf("digite a letra> ");
-		fgets(buffer, BUFSZ-1, stdin);
+		char letter = getchar();
+		buffer[0] = '1';
+		buffer[1] = letter;
 		size_t count = send(sock, buffer, strlen(buffer)+1, 0);
 		if (count != strlen(buffer)+1) {
 			logexit("send");
