@@ -94,6 +94,7 @@ int main(int argc, char **argv) {
         
         sendAcknowledgmentMessage(clientSocket);
 
+        char buffer[BUFSZ];
         int isWordComplete = 0;
         printf("Waiting for user guess\n");
         while (!isWordComplete) {
