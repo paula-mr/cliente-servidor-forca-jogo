@@ -67,6 +67,20 @@ int connectToClientSocket(int sock) {
     return clientSocket;
 }
 
+void sendAcknowledgmentMessage(int clientSocket) {
+    printf("sending first message\n");
+
+    char buffer[BUFSZ];
+    sprintf(buffer, "%d%u", 1, strlen(WORD));
+    printf("%s\n", buffer);
+    printf("size: %u\n", strlen(WORD));
+    size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
+    if (count != strlen(buffer) + 1) {
+        logexit("send");
+    }
+    printf("message sent\n");
+}
+
 int main(int argc, char **argv) {
 	if (argc < 3) {
         printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
@@ -77,18 +91,8 @@ int main(int argc, char **argv) {
 
     while(1) {
         int clientSocket = connectToClientSocket(sock);
-
-        printf("sending first message\n");
-
-        char buffer[BUFSZ];
-        sprintf(buffer, "%d%u", 1, strlen(WORD));
-        printf("%s\n", buffer);
-        printf("size: %u\n", strlen(WORD));
-        size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
-        if (count != strlen(buffer) + 1) {
-            logexit("send");
-        }
-        printf("message sent\n");
+        
+        sendAcknowledgmentMessage(clientSocket);
 
         int isWordComplete = 0;
         printf("Waiting for user guess\n");

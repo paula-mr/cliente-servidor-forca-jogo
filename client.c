@@ -41,16 +41,7 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 	return address;
 }
 
-int main(int argc, char **argv) {
-	if (argc < 3) {
-		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
-		exit(EXIT_FAILURE);
-	}
-
-	struct sockaddr_storage storage;
-	int sock = createSocket(argv, &storage);
-	connectSocket(sock, storage);
-
+int receiveAcknowledgmentMessage(int sock) {
 	char buffer[BUFSZ];
 
 	memset(buffer, 0, BUFSZ);
@@ -74,6 +65,21 @@ int main(int argc, char **argv) {
 		printf("_ ");
 	}
 	printf("\n");
+
+	return wordSize;
+}
+
+int main(int argc, char **argv) {
+	if (argc < 3) {
+		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
+		exit(EXIT_FAILURE);
+	}
+
+	struct sockaddr_storage storage;
+	int sock = createSocket(argv, &storage);
+	connectSocket(sock, storage);
+
+	int wordSize = receiveAcknowledgmentMessage(sock);
 
 	while (typeMessage != 4) {
 		memset(buffer, 0, BUFSZ);
