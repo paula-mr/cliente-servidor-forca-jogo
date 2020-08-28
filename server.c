@@ -12,13 +12,8 @@
 #define BUFSZ 1024
 #define WORD "COMUNICACAO"
 
-int main(int argc, char **argv) {
-	if (argc < 3) {
-        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
-        exit(EXIT_FAILURE);
-    }
-
-    struct sockaddr_storage storage;
+int createSocket(char **argv) {
+	struct sockaddr_storage storage;
 	if (server_sockaddr_init(argv[1], argv[2], &storage) != 0) {
 		printf("Argumentos passados incorretos. Necessário especificar tipo de endereço e porta.");
         exit(EXIT_FAILURE);
@@ -42,7 +37,7 @@ int main(int argc, char **argv) {
     }
 
     if (listen(sock, 10) != 0) {
-        printf("Erro ao realizar escutar requisições.");
+        printf("Erro ao escutar requisições.");
 		exit(EXIT_FAILURE);
     }
 
@@ -50,21 +45,38 @@ int main(int argc, char **argv) {
 	addrtostr(address, addrstr, BUFSZ);
 	printf("Bound em %s\n", addrstr);
 
+    return sock;
+}
+
+int connectToClientSocket(int sock) {
+    struct sockaddr_storage clientStorage;
+    struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
+    socklen_t clientAddressLength = sizeof(clientStorage);
+
+    int clientSocket = accept(sock, clientAddress, &clientAddressLength);
+
+    if (clientSocket == -1) {
+        printf("Erro ao conectar com o cliente.");
+        exit(EXIT_FAILURE);
+    }
+
+    char clientAddrstr[BUFSZ];
+    addrtostr(clientAddress, clientAddrstr, BUFSZ);
+    printf("Bound em %s\n", clientAddrstr);
+
+    return clientSocket;
+}
+
+int main(int argc, char **argv) {
+	if (argc < 3) {
+        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
+        exit(EXIT_FAILURE);
+    }
+
+    int sock = createSocket(argv);
+
     while(1) {
-        struct sockaddr_storage clientStorage;
-        struct sockaddr *clientAddress = (struct sockaddr *)(&clientStorage);
-        socklen_t clientAddressLength = sizeof(clientStorage);
-
-        int clientSocket = accept(sock, clientAddress, &clientAddressLength);
-
-        if (clientSocket == -1) {
-            printf("Erro ao conectar com o cliente.");
-		    exit(EXIT_FAILURE);
-        }
-
-        char clientAddrstr[BUFSZ];
-        addrtostr(clientAddress, clientAddrstr, BUFSZ);
-        printf("Bound em %s\n", clientAddrstr);
+        int clientSocket = connectToClientSocket(sock);
 
         printf("sending first message\n");
 
