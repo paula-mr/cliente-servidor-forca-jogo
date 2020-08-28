@@ -90,7 +90,7 @@ void sendGuessAnswer(char letter, int sock) {
 
     for (int i=0; i<strlen(WORD); i++) {
         if (WORD[i] == letter) {
-            buffer[countOccurrences+2] = WORD[i];
+            buffer[countOccurrences+2] = i;
             countOccurrences++;
         }
     }
