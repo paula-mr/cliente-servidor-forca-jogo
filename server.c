@@ -85,8 +85,8 @@ int main(int argc, char **argv) {
             count = 0;
             memset(buffer, 0, BUFSZ);
             
-            count = recv(sock, buffer, BUFSZ, 0);
-            if (count == 3) {
+            count = recv(clientSocket, buffer, BUFSZ, 0);
+            if (count > 0 && count < 100) {
                 printf("%s\n", buffer);
                 printf("received %u bytes\n", count);
 
