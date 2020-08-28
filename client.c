@@ -82,6 +82,7 @@ int main(int argc, char **argv) {
 	int wordSize = receiveAcknowledgmentMessage(sock);
 
 	char buffer[BUFSZ];
+	int typeMessage = 1;
 	while (typeMessage != 4) {
 		memset(buffer, 0, BUFSZ);
 		printf("digite a letra> ");
