@@ -51,12 +51,8 @@ int receiveAcknowledgmentMessage(int sock) {
 	printf("%s\n", buffer);
 	printf("received %u bytes\n", count);
 
-	int typeMessage = buffer[0] - '0';
-	int wordSize = 0;
-	for (int i=1; i<count-1; i++) {
-		wordSize *= 10;
-		wordSize += buffer[i] - '0';
-	}
+	int typeMessage = buffer[0];
+	int wordSize = buffer[1];
 
 	printf("Received message type %d with word size %d\n", typeMessage, wordSize);
 
@@ -148,7 +144,7 @@ int main(int argc, char **argv) {
 		printWord(word, wordSize);
 	}
 
-	printf("You won!");
+	printf("You won!\n");
 
 	close(sock);
 	exit(EXIT_SUCCESS);

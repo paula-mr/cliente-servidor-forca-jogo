@@ -71,7 +71,10 @@ void sendAcknowledgmentMessage(int clientSocket) {
     printf("sending first message\n");
 
     char buffer[BUFSZ];
-    sprintf(buffer, "%d%u", 1, strlen(WORD));
+    buffer[0] = 1;
+    buffer[1] = strlen(WORD);
+    buffer[2] = '\0';
+
     printf("%s\n", buffer);
     printf("size: %u\n", strlen(WORD));
     size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
