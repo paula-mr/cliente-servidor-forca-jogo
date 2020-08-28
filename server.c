@@ -85,10 +85,13 @@ void sendFinalMessage(int clientSocket) {
     char buffer[BUFSZ];
     memset(buffer, 0, BUFSZ);
     buffer[0] = 4;
+    buffer[1] = '\0';
 
-    size_t count = send(clientSocket, buffer, 1, 0);
+    printf("Word complete!\n");
 
-    if (count != 1) {
+    size_t count = send(clientSocket, buffer, 2, 0);
+
+    if (count != 2) {
         logexit("final");
     }
 }
@@ -117,7 +120,7 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
     int result = strcmp(WORD, filledWord);
 
     if (result == 0) {
-        sendFinalMessage(clientSocket);
+        sendFinalMessage(sock);
         return 1;
     } 
     size_t count = send(sock, buffer, countOccurrences+3, 0);
