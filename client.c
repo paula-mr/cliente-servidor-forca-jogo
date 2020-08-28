@@ -90,18 +90,18 @@ char guessLetter(int sock) {
 
 int receiveAnswer(int sock, char letter, char* word) {
 	char buffer[BUFSZ];
-	int occurrences[BUFSZ];
 
-    memset(occurrences, 0, BUFSZ);
 	memset(buffer, 0, BUFSZ);
 
-	printf("Waiting for answer\n");
+	printf("Waiting for an answer\n");
 	size_t count = recv(sock, buffer, BUFSZ, 0);
 
 	printf("%s\n", buffer);
 	printf("received %u bytes\n", count);
+	printf("%c\n", buffer[0]);
 
 	int typeMessage = buffer[0] - '0';
+	printf("type message %d\n", typeMessage);
 	if (count < 3) {
 		if (typeMessage == 4) {
 			for (int i=0; i<strlen(word); i++) {
