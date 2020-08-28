@@ -69,8 +69,9 @@ int main(int argc, char **argv) {
 		char letter = getchar();
 		buffer[0] = '1';
 		buffer[1] = letter;
-		size_t count = send(sock, buffer, strlen(buffer)+1, 0);
-		if (count != strlen(buffer)+1) {
+		buffer[2] = '\0';
+		size_t count = send(sock, buffer, 3, 0);
+		if (count != 3) {
 			logexit("send");
 		}
 	}
