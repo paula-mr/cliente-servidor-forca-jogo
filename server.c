@@ -118,6 +118,7 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
     printf("%s\n", buffer);
 
     int result = strcmp(WORD, filledWord);
+    printf("COMPARE WORDS: %d\n", result);
 
     if (result == 0) {
         sendFinalMessage(sock);
