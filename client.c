@@ -65,16 +65,16 @@ int receiveAcknowledgmentMessage(int sock) {
 
 void printWord(char* word, int wordSize) {
 	for (int i=0; i<wordSize; i++) {
-		printf("%s ", word[i]);
+		printf("%c ", word[i]);
 	}
 	printf("\n");
 }
 
-int guessLetter(int sock) {
+char guessLetter(int sock) {
 	char buffer[BUFSZ];
 
 	memset(buffer, 0, BUFSZ);
-	printf("digite a letra> ");
+	printf("\ndigite a letra> ");
 	char letter = getchar();
 	buffer[0] = '1';
 	buffer[1] = letter;
@@ -84,6 +84,32 @@ int guessLetter(int sock) {
 	if (count != 3) {
 		logexit("send");
 	}
+
+	return letter;
+}
+
+int receiveAnswer(int sock, char letter, char* word) {
+	char buffer[BUFSZ];
+	int occurrences[BUFSZ];
+
+    memset(occurrences, 0, BUFSZ);
+	memset(buffer, 0, BUFSZ);
+
+	printf("Waiting for answer\n");
+	size_t count = recv(sock, buffer, BUFSZ, 0);
+
+	printf("%s\n", buffer);
+	printf("received %u bytes\n", count);
+
+	int typeMessage = buffer[0] - '0';
+	int letterOccurrences = buffer[1];
+
+	for (int i=0; i<letterOccurrences; i++) {
+		int occurrence = buffer[i+2];
+		word[occurrence] = letter;
+	}
+
+	return typeMessage;
 }
 
 int main(int argc, char **argv) {
@@ -105,10 +131,13 @@ int main(int argc, char **argv) {
 
 	printf("Guess the word!\n");
 	printWord(word, wordSize);
-	
+
 	int typeMessage = 1;
 	while (typeMessage != 4) {
-		guessLetter(sock);
+		char letter = guessLetter(sock);
+		typeMessage = receiveAnswer(sock, letter, word);
+
+		printWord(word, wordSize);
 	}
 
 	close(sock);

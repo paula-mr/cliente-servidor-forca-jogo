@@ -81,7 +81,30 @@ void sendAcknowledgmentMessage(int clientSocket) {
     printf("message sent\n");
 }
 
-int receiveLetter(int clientSocket) {
+void sendGuessAnswer(char letter, int sock) {
+    int countOccurrences = 0;
+    char occurrences[BUFSZ];
+    memset(buffer, 0, BUFSZ);
+
+    occurrences[0] = 3;
+
+    for (int i=0; i<strlen(WORD); i++) {
+        if (WORD[i] == letter) {
+            occurrences[countOccurrences+2] = WORD[i];
+            countOccurrences++;
+        }
+    }
+
+    occurrences[1] = countOccurrences;
+    WORD[countOccurrences+2] = '\0';
+
+    size_t count = send(sock, buffer, 2+countOccurrences, 0);
+    if (count != countOccurrences+2) {
+        logexit("send");
+    }
+}
+
+void receiveLetter(int clientSocket) {
     char buffer[BUFSZ];
 
     size_t count = 0;
@@ -97,6 +120,8 @@ int receiveLetter(int clientSocket) {
         char letter = buffer[1];
 
         printf("Received message type %d with letter %c\n", typeMessage, letter);
+    
+        sendGuessAnswer(letter, clientSocket);
     }
 }
 
