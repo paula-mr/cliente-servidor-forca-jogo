@@ -81,7 +81,7 @@ void sendAcknowledgmentMessage(int clientSocket) {
     printf("message sent\n");
 }
 
-void sendGuessAnswer(char letter, int sock) {
+void sendGuessAnswer(char letter, int sock, char* filledWord) {
     int countOccurrences = 0;
     char buffer[BUFSZ];
     memset(buffer, 0, BUFSZ);
@@ -90,6 +90,7 @@ void sendGuessAnswer(char letter, int sock) {
 
     for (int i=0; i<strlen(WORD); i++) {
         if (WORD[i] == letter) {
+            filledWord[i] = letter;
             buffer[countOccurrences+2] = i;
             countOccurrences++;
         }
@@ -102,12 +103,12 @@ void sendGuessAnswer(char letter, int sock) {
     printf("%s\n", buffer);
 
     size_t count = send(sock, buffer, countOccurrences+3, 0);
-    if (count != countOccurrences+2) {
+    if (count != countOccurrences+3) {
         logexit("send");
     }
 }
 
-void receiveLetter(int clientSocket) {
+void receiveLetter(int clientSocket, char* filledWord) {
     char buffer[BUFSZ];
 
     size_t count = 0;
@@ -124,7 +125,19 @@ void receiveLetter(int clientSocket) {
 
         printf("Received message type %d with letter %c\n", typeMessage, letter);
     
-        sendGuessAnswer(letter, clientSocket);
+        sendGuessAnswer(letter, clientSocket, filledWord);
+    }
+}
+
+void sendFinalMessage(int clientSocket) {
+    char buffer[BUFSZ];
+    memset(buffer, 0, BUFSZ);
+    buffer[0] = 4;
+
+    size_t count = send(clientSocket, buffer, 1, 0);
+
+    if (count != 1) {
+        logexit("final");
     }
 }
 
@@ -143,8 +156,20 @@ int main(int argc, char **argv) {
 
         int isWordComplete = 0;
         printf("Waiting for user guess\n");
+
+        char filledWord[BUFSZ];
+        memset(filledWord, 0, BUFSZ);
+        filledWord[strlen(WORD)] = '\0';
+
         while (!isWordComplete) {
-            receiveLetter(clientSocket);
+            receiveLetter(clientSocket, filledWord);
+            int result = strcmp(WORD, filledWord);
+
+            if (result == 0) {
+                sendFinalMessage(clientSocket);
+                break;
+            }
+
         }
 
         close(clientSocket);

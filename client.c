@@ -112,6 +112,26 @@ int receiveAnswer(int sock, char letter, char* word) {
 	return typeMessage;
 }
 
+int receiveConfirmation(int sock, char letter, char* word) {
+	char buffer[BUFSZ];
+
+	memset(buffer, 0, BUFSZ);
+
+	printf("Waiting for complete sign\n");
+	size_t count = recv(sock, buffer, 1, 0);
+
+	printf("%s\n", buffer);
+	printf("received %u bytes\n", count);
+
+	int typeMessage = buffer[0] - '0';
+
+	if (typeMessage == 4) {
+		return typeMessage;
+	}
+
+	return 3;
+}
+
 int main(int argc, char **argv) {
 	if (argc < 3) {
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
@@ -135,9 +155,9 @@ int main(int argc, char **argv) {
 	int typeMessage = 1;
 	while (typeMessage != 4) {
 		char letter = guessLetter(sock);
-		typeMessage = receiveAnswer(sock, letter, word);
-
+		receiveAnswer(sock, letter, word);
 		printWord(word, wordSize);
+		typeMessage = receiveConfirmation(sock);
 	}
 
 	close(sock);
