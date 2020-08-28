@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
         printf("Waiting for user guess\n");
         while (!isWordComplete) {
             unsigned total = 0;
-            count = 0;
+            size_t count = 0;
             memset(buffer, 0, BUFSZ);
             
             count = recv(clientSocket, buffer, BUFSZ, 0);
