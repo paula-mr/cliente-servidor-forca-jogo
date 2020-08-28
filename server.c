@@ -98,7 +98,10 @@ void sendGuessAnswer(char letter, int sock) {
     buffer[1] = countOccurrences;
     buffer[countOccurrences+2] = '\0';
 
-    size_t count = send(sock, buffer, countOccurrences+2, 0);
+    printf("Occurrences: %d\n", countOccurrences);
+    printf("%s\n", buffer);
+
+    size_t count = send(sock, buffer, countOccurrences+3, 0);
     if (count != countOccurrences+2) {
         logexit("send");
     }
