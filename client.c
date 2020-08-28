@@ -117,7 +117,7 @@ int receiveAnswer(int sock, char letter, char* word) {
 			word[occurrence] = letter;
 		}
 	}
-	
+
 	return typeMessage;
 }
 
@@ -146,8 +146,9 @@ int main(int argc, char **argv) {
 		char letter = guessLetter(sock);
 		receiveAnswer(sock, letter, word);
 		printWord(word, wordSize);
-		typeMessage = receiveConfirmation(sock);
 	}
+
+	printf("You won!");
 
 	close(sock);
 	exit(EXIT_SUCCESS);
