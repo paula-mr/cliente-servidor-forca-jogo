@@ -100,7 +100,7 @@ int receiveAnswer(int sock, char letter, char* word) {
 	printf("received %u bytes\n", count);
 	printf("%c\n", buffer[0]);
 
-	int typeMessage = buffer[0] - '0';
+	int typeMessage = buffer[0];
 	printf("type message %d\n", typeMessage);
 	if (count < 3) {
 		if (typeMessage == 4) {
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
 	int typeMessage = 1;
 	while (typeMessage != 4) {
 		char letter = guessLetter(sock);
-		receiveAnswer(sock, letter, word);
+		typeMessage = receiveAnswer(sock, letter, word);
 		printWord(word, wordSize);
 	}
 
