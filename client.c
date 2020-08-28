@@ -102,34 +102,23 @@ int receiveAnswer(int sock, char letter, char* word) {
 	printf("received %u bytes\n", count);
 
 	int typeMessage = buffer[0] - '0';
-	int letterOccurrences = buffer[1];
+	if (count < 3) {
+		if (typeMessage == 4) {
+			for (int i=0; i<strlen(word); i++) {
+				if (word[i] == '_')
+					word[i] = letter;
+			}
+		}
+	} else {
+		int letterOccurrences = buffer[1];
 
-	for (int i=0; i<letterOccurrences; i++) {
-		int occurrence = buffer[i+2];
-		word[occurrence] = letter;
+		for (int i=0; i<letterOccurrences; i++) {
+			int occurrence = buffer[i+2];
+			word[occurrence] = letter;
+		}
 	}
-
+	
 	return typeMessage;
-}
-
-int receiveConfirmation(int sock, char letter, char* word) {
-	char buffer[BUFSZ];
-
-	memset(buffer, 0, BUFSZ);
-
-	printf("Waiting for complete sign\n");
-	size_t count = recv(sock, buffer, 1, 0);
-
-	printf("%s\n", buffer);
-	printf("received %u bytes\n", count);
-
-	int typeMessage = buffer[0] - '0';
-
-	if (typeMessage == 4) {
-		return typeMessage;
-	}
-
-	return 3;
 }
 
 int main(int argc, char **argv) {

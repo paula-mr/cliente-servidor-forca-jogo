@@ -81,6 +81,18 @@ void sendAcknowledgmentMessage(int clientSocket) {
     printf("message sent\n");
 }
 
+void sendFinalMessage(int clientSocket) {
+    char buffer[BUFSZ];
+    memset(buffer, 0, BUFSZ);
+    buffer[0] = 4;
+
+    size_t count = send(clientSocket, buffer, 1, 0);
+
+    if (count != 1) {
+        logexit("final");
+    }
+}
+
 void sendGuessAnswer(char letter, int sock, char* filledWord) {
     int countOccurrences = 0;
     char buffer[BUFSZ];
@@ -102,9 +114,15 @@ void sendGuessAnswer(char letter, int sock, char* filledWord) {
     printf("Occurrences: %d\n", countOccurrences);
     printf("%s\n", buffer);
 
-    size_t count = send(sock, buffer, countOccurrences+3, 0);
-    if (count != countOccurrences+3) {
-        logexit("send");
+    int result = strcmp(WORD, filledWord);
+
+    if (result == 0) {
+        sendFinalMessage(clientSocket);
+    } else {
+        size_t count = send(sock, buffer, countOccurrences+3, 0);
+        if (count != countOccurrences+3) {
+            logexit("send");
+        }
     }
 }
 
@@ -126,18 +144,6 @@ void receiveLetter(int clientSocket, char* filledWord) {
         printf("Received message type %d with letter %c\n", typeMessage, letter);
     
         sendGuessAnswer(letter, clientSocket, filledWord);
-    }
-}
-
-void sendFinalMessage(int clientSocket) {
-    char buffer[BUFSZ];
-    memset(buffer, 0, BUFSZ);
-    buffer[0] = 4;
-
-    size_t count = send(clientSocket, buffer, 1, 0);
-
-    if (count != 1) {
-        logexit("final");
     }
 }
 
@@ -163,12 +169,6 @@ int main(int argc, char **argv) {
 
         while (!isWordComplete) {
             receiveLetter(clientSocket, filledWord);
-            int result = strcmp(WORD, filledWord);
-
-            if (result == 0) {
-                sendFinalMessage(clientSocket);
-                break;
-            }
 
         }
 
