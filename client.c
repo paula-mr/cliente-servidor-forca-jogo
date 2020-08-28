@@ -11,7 +11,7 @@
 
 #define BUFSZ 1024
 
-int main(int argc, char **argv) {
+int createSocket(char **argv, struct sockaddr_storage *storage) {
 	if (argc < 3) {
         printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
         exit(EXIT_FAILURE);
@@ -29,6 +29,10 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	return sock;
+}
+
+struct sockaddr connectSocket(int sock, struct sockaddr_storage) {
 	struct sockaddr *address = (struct sockaddr *)(&storage);
 	if (connect(sock, address, sizeof(storage)) != 0) {
 		printf("Erro ao conectar ao servidor.");
@@ -38,6 +42,14 @@ int main(int argc, char **argv) {
 	char addrstr[BUFSZ];
 	addrtostr(address, addrstr, BUFSZ);
 	printf("Conectado em %s\n", addrstr);
+
+	return address;
+}
+
+int main(int argc, char **argv) {
+	struct sockaddr_storage storage;
+	int sock = createSocket(argv, &storage);
+	struct sockaddr *address = connectSocket(sock, storage);
 
 	char buffer[BUFSZ];
 
