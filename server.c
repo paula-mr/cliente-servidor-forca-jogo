@@ -81,6 +81,25 @@ void sendAcknowledgmentMessage(int clientSocket) {
     printf("message sent\n");
 }
 
+int receiveLetter(int clientSocket) {
+    char buffer[BUFSZ];
+
+    size_t count = 0;
+    memset(buffer, 0, BUFSZ);
+    
+    count = recv(clientSocket, buffer, BUFSZ, 0);
+
+    if (count > 0 && count < 100) {
+        printf("%s\n", buffer);
+        printf("received %u bytes\n", count);
+
+        int typeMessage = buffer[0] - '0';
+        char letter = buffer[1];
+
+        printf("Received message type %d with letter %c\n", typeMessage, letter);
+    }
+}
+
 int main(int argc, char **argv) {
 	if (argc < 3) {
         printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
@@ -94,27 +113,11 @@ int main(int argc, char **argv) {
         
         sendAcknowledgmentMessage(clientSocket);
 
-        char buffer[BUFSZ];
         int isWordComplete = 0;
         printf("Waiting for user guess\n");
         while (!isWordComplete) {
-            unsigned total = 0;
-            size_t count = 0;
-            memset(buffer, 0, BUFSZ);
-            
-            count = recv(clientSocket, buffer, BUFSZ, 0);
-            if (count > 0 && count < 100) {
-                printf("%s\n", buffer);
-                printf("received %u bytes\n", count);
-
-                int typeMessage = buffer[0] - '0';
-                char letter = buffer[1];
-
-                printf("Received message type %d with letter %c\n", typeMessage, letter);
-            }
-
+            receiveLetter(clientSocket);
         }
-
 
         close(clientSocket);
     }

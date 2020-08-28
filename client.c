@@ -59,14 +59,31 @@ int receiveAcknowledgmentMessage(int sock) {
 	}
 
 	printf("Received message type %d with word size %d\n", typeMessage, wordSize);
-	printf("Guess the word!\n");
-
-	for (int i=0; i<wordSize; i++) {
-		printf("_ ");
-	}
-	printf("\n");
 
 	return wordSize;
+}
+
+void printWord(char* word, int wordSize) {
+	for (int i=0; i<wordSize; i++) {
+		printf("%s ", word[i]);
+	}
+	printf("\n");
+}
+
+int guessLetter(int sock) {
+	char buffer[BUFSZ];
+
+	memset(buffer, 0, BUFSZ);
+	printf("digite a letra> ");
+	char letter = getchar();
+	buffer[0] = '1';
+	buffer[1] = letter;
+	buffer[2] = '\0';
+
+	size_t count = send(sock, buffer, 3, 0);
+	if (count != 3) {
+		logexit("send");
+	}
 }
 
 int main(int argc, char **argv) {
@@ -80,20 +97,18 @@ int main(int argc, char **argv) {
 	connectSocket(sock, storage);
 
 	int wordSize = receiveAcknowledgmentMessage(sock);
+	char word[BUFSZ];
+	for(int i=0; i<wordSize; i++) {
+		word[i] = '_';
+	}
+	word[wordSize] = '\0';
 
-	char buffer[BUFSZ];
+	printf("Guess the word!\n");
+	printWord(word, wordSize);
+	
 	int typeMessage = 1;
 	while (typeMessage != 4) {
-		memset(buffer, 0, BUFSZ);
-		printf("digite a letra> ");
-		char letter = getchar();
-		buffer[0] = '1';
-		buffer[1] = letter;
-		buffer[2] = '\0';
-		size_t count = send(sock, buffer, 3, 0);
-		if (count != 3) {
-			logexit("send");
-		}
+		guessLetter(sock);
 	}
 
 	close(sock);
