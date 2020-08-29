@@ -27,7 +27,8 @@ int createSocket(char **argv) {
 
     int enable = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) != 0) {
-        logexit("setsockopt");
+        printf("Erro ao configurar socket.");
+		exit(EXIT_FAILURE);
     }
 
     struct sockaddr *address = (struct sockaddr *)(&storage);
@@ -43,7 +44,6 @@ int createSocket(char **argv) {
 
     char addrstr[BUFSZ];
 	addrtostr(address, addrstr, BUFSZ);
-	printf("Bound em %s\n", addrstr);
 
     return sock;
 }
@@ -62,26 +62,22 @@ int connectToClientSocket(int sock) {
 
     char clientAddrstr[BUFSZ];
     addrtostr(clientAddress, clientAddrstr, BUFSZ);
-    printf("Bound em %s\n", clientAddrstr);
+    printf("Cliente conectado em %s.\n", clientAddrstr);
 
     return clientSocket;
 }
 
 void sendAcknowledgmentMessage(int clientSocket) {
-    printf("sending first message\n");
-
     char buffer[BUFSZ];
     buffer[0] = 1;
     buffer[1] = strlen(WORD);
     buffer[2] = '\0';
 
-    printf("%s\n", buffer);
-    printf("size: %u\n", strlen(WORD));
     size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
     if (count != strlen(buffer) + 1) {
-        logexit("send");
+        printf("Erro ao mandar mensagem de confirmação.");
+        exit(EXIT_FAILURE);
     }
-    printf("message sent\n");
 }
 
 void sendFinalMessage(int clientSocket) {
@@ -93,9 +89,9 @@ void sendFinalMessage(int clientSocket) {
     printf("Word complete!\n");
 
     size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
-
     if (count != strlen(buffer) + 1) {
-        logexit("final");
+        printf("Erro ao mandar mensagem de finalização.");
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -117,12 +113,7 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
     buffer[1] = countOccurrences;
     buffer[countOccurrences+2] = '\0';
 
-    printf("Occurrences: %d\n", countOccurrences);
-    printf("%s\n", buffer);
-
     int result = strcmp(WORD, filledWord);
-    printf("COMPARE WORDS: %d\n", result);
-
     if (result == 0) {
         sendFinalMessage(sock);
         return 1;
@@ -130,7 +121,8 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
 
     size_t count = send(sock, buffer, countOccurrences+3, 0);
     if (count != countOccurrences+3) {
-        logexit("send");
+        printf("Erro ao enviar ocorrências da letra.");
+        exit(EXIT_FAILURE);
     }
 
     return 0;
@@ -145,14 +137,9 @@ int receiveLetter(int clientSocket, char* filledWord) {
     count = recv(clientSocket, buffer, BUFSZ, 0);
 
     if (count > 0 && count < 100) {
-        printf("%s\n", buffer);
-        printf("received %u bytes\n", count);
-
-        int typeMessage = buffer[0] - '0';
+        int typeMessage = buffer[0];
         char letter = buffer[1];
 
-        printf("Received message type %d with letter %c\n", typeMessage, letter);
-    
         return sendGuessAnswer(letter, clientSocket, filledWord);
     }
 }
@@ -166,12 +153,13 @@ int main(int argc, char **argv) {
     int sock = createSocket(argv);
 
     while(1) {
+        printf("Esperando cliente se conectar.\n");
         int clientSocket = connectToClientSocket(sock);
         
         sendAcknowledgmentMessage(clientSocket);
 
         int isWordComplete = 0;
-        printf("Waiting for user guess\n");
+        printf("Esperando pelo palpite do usuário.\n");
 
         char filledWord[BUFSZ];
         memset(filledWord, 0, BUFSZ);
@@ -179,10 +167,10 @@ int main(int argc, char **argv) {
 
         while (!isWordComplete) {
             isWordComplete = receiveLetter(clientSocket, filledWord);
-            printf("Word complete value: %d\n", isWordComplete);
         }
 
         close(clientSocket);
+        printf("Conexão fechada com o cliente.\n");
     }
 
 	exit(EXIT_SUCCESS);

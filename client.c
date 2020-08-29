@@ -36,7 +36,7 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 
 	char addrstr[BUFSZ];
 	addrtostr(address, addrstr, BUFSZ);
-	printf("Conectado em %s\n", addrstr);
+	printf("Conectado em %s.\n", addrstr);
 
 	return address;
 }
@@ -45,7 +45,7 @@ int receiveAcknowledgmentMessage(int sock) {
 	char buffer[BUFSZ];
 
 	memset(buffer, 0, BUFSZ);
-	printf("Waiting for ack message\n");
+	printf("Esperando por mensagem de confirmação.\n");
 	size_t count = recv(sock, buffer, BUFSZ, 0);
 
 	printf("%s\n", buffer);
@@ -53,8 +53,6 @@ int receiveAcknowledgmentMessage(int sock) {
 
 	int typeMessage = buffer[0];
 	int wordSize = buffer[1];
-
-	printf("Received message type %d with word size %d\n", typeMessage, wordSize);
 
 	return wordSize;
 }
@@ -70,15 +68,16 @@ char guessLetter(int sock) {
 	char buffer[BUFSZ];
 
 	memset(buffer, 0, BUFSZ);
-	printf("\ndigite a letra> ");
+	printf("\nDigite a letra: ");
 	char letter = getchar();
-	buffer[0] = '1';
+	buffer[0] = 1;
 	buffer[1] = letter;
 	buffer[2] = '\0';
 
 	size_t count = send(sock, buffer, 3, 0);
 	if (count != 3) {
-		logexit("send");
+		printf("Erro ao enviar letra de palpite.");
+		exit(EXIT_FAILURE);
 	}
 
 	return letter;
@@ -89,21 +88,18 @@ int receiveAnswer(int sock, char letter, char* word) {
 
 	memset(buffer, 0, BUFSZ);
 
-	printf("Waiting for an answer\n");
 	size_t count = recv(sock, buffer, BUFSZ, 0);
 
-	printf("%s\n", buffer);
-	printf("received %u bytes\n", count);
-	printf("%c\n", buffer[0]);
-
 	int typeMessage = buffer[0];
-	printf("type message %d\n", typeMessage);
+
 	if (count < 3) {
 		if (typeMessage == 4) {
 			for (int i=0; i<strlen(word); i++) {
 				if (word[i] == '_')
 					word[i] = letter;
 			}
+		} else {
+			printf("Palavra não possui a letra %c!", letter);
 		}
 	} else {
 		int letterOccurrences = buffer[1];
