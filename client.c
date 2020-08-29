@@ -10,15 +10,17 @@
 #include <arpa/inet.h>
 
 int createSocket(char **argv, struct sockaddr_storage *storage);
-struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage);
+struct sockaddr *connectSocket(int sock, struct sockaddr_storage storage);
 int receiveAcknowledgmentMessage(int sock);
 char guessLetter(int sock);
-int receiveAnswer(int sock, char letter, char* word);
-void initializeWord(char* word, int wordSize);
-void printWord(char* word, int wordSize);
+int receiveAnswer(int sock, char letter, char *word);
+void initializeWord(char *word, int wordSize);
+void printWord(char *word, int wordSize);
 
-int main(int argc, char **argv) {
-	if (argc < 3) {
+int main(int argc, char **argv)
+{
+	if (argc < 3)
+	{
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
 		exit(EXIT_FAILURE);
 	}
@@ -37,7 +39,8 @@ int main(int argc, char **argv) {
 	printWord(word, wordSize);
 
 	int typeMessage = 1;
-	while (typeMessage != 4) {
+	while (typeMessage != 4)
+	{
 		char letter = guessLetter(sock);
 		typeMessage = receiveAnswer(sock, letter, word);
 		printWord(word, wordSize);
@@ -49,14 +52,17 @@ int main(int argc, char **argv) {
 	exit(EXIT_SUCCESS);
 }
 
-int createSocket(char **argv, struct sockaddr_storage *storage) {
-	if (parseAddress(argv[1], argv[2], storage) != 0) {
+int createSocket(char **argv, struct sockaddr_storage *storage)
+{
+	if (parseAddress(argv[1], argv[2], storage) != 0)
+	{
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
-	
+
 	int sock = socket(storage->ss_family, SOCK_STREAM, 0);
-	if (sock == -1) {
+	if (sock == -1)
+	{
 		printf("Erro ao inicializar socket.");
 		exit(EXIT_FAILURE);
 	}
@@ -64,9 +70,11 @@ int createSocket(char **argv, struct sockaddr_storage *storage) {
 	return sock;
 }
 
-struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
-	struct sockaddr* address = (struct sockaddr *)(&storage);
-	if (connect(sock, address, sizeof(storage)) != 0) {
+struct sockaddr *connectSocket(int sock, struct sockaddr_storage storage)
+{
+	struct sockaddr *address = (struct sockaddr *)(&storage);
+	if (connect(sock, address, sizeof(storage)) != 0)
+	{
 		printf("Erro ao conectar ao servidor.");
 		exit(EXIT_FAILURE);
 	}
@@ -76,7 +84,8 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 	return address;
 }
 
-int receiveAcknowledgmentMessage(int sock) {
+int receiveAcknowledgmentMessage(int sock)
+{
 	char buffer[2];
 	memset(buffer, 0, 2);
 
@@ -84,7 +93,8 @@ int receiveAcknowledgmentMessage(int sock) {
 	size_t count = recv(sock, buffer, 2, 0);
 
 	int typeMessage = buffer[0];
-	if (count != 2 || typeMessage != ACKNOWLEDGMENT_MESSAGE) {
+	if (count != 2 || typeMessage != ACKNOWLEDGMENT_MESSAGE)
+	{
 		printf("Erro ao receber mensagem de confirmação.\n");
 		exit(EXIT_FAILURE);
 	}
@@ -93,7 +103,8 @@ int receiveAcknowledgmentMessage(int sock) {
 	return wordSize;
 }
 
-char guessLetter(int sock) {
+char guessLetter(int sock)
+{
 	char buffer[2];
 
 	memset(buffer, 0, 2);
@@ -107,7 +118,8 @@ char guessLetter(int sock) {
 	buffer[1] = letter;
 
 	size_t count = send(sock, buffer, 2, 0);
-	if (count != 2) {
+	if (count != 2)
+	{
 		printf("Erro ao enviar letra de palpite.");
 		exit(EXIT_FAILURE);
 	}
@@ -115,30 +127,40 @@ char guessLetter(int sock) {
 	return letter;
 }
 
-int receiveAnswer(int sock, char letter, char* word) {
+int receiveAnswer(int sock, char letter, char *word)
+{
 	char buffer[BUFSZ];
 	memset(buffer, 0, BUFSZ);
 
 	size_t count = recv(sock, buffer, BUFSZ, 0);
 
 	int typeMessage = buffer[0];
-	if (count == 0 || (typeMessage != ANSWER_MESSAGE && typeMessage != END_MESSAGE)) {
+	if (count == 0 || (typeMessage != ANSWER_MESSAGE && typeMessage != END_MESSAGE))
+	{
 		printf("Erro ao receber resposta do servidor.");
-        exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
-	if (typeMessage == END_MESSAGE) {
-		for (int i=0; i<strlen(word); i++) {
+	if (typeMessage == END_MESSAGE)
+	{
+		for (int i = 0; i < strlen(word); i++)
+		{
 			if (word[i] == '_')
 				word[i] = letter;
 		}
-	} else {
+	}
+	else
+	{
 		int letterOccurrences = buffer[1];
-		if (letterOccurrences == 0) {
+		if (letterOccurrences == 0)
+		{
 			printf("Letra %c não está presente na palavra.\n", letter);
-		} else {
-			for (int i=0; i<letterOccurrences; i++) {
-				int occurrence = buffer[i+2];
+		}
+		else
+		{
+			for (int i = 0; i < letterOccurrences; i++)
+			{
+				int occurrence = buffer[i + 2];
 				word[occurrence] = letter;
 			}
 		}
@@ -147,15 +169,19 @@ int receiveAnswer(int sock, char letter, char* word) {
 	return typeMessage;
 }
 
-void printWord(char* word, int wordSize) {
-	for (int i=0; i<wordSize; i++) {
+void printWord(char *word, int wordSize)
+{
+	for (int i = 0; i < wordSize; i++)
+	{
 		printf("%c ", word[i]);
 	}
 	printf("\n");
 }
 
-void initializeWord(char* word, int wordSize) {
-	for(int i=0; i<wordSize; i++) {
+void initializeWord(char *word, int wordSize)
+{
+	for (int i = 0; i < wordSize; i++)
+	{
 		word[i] = '_';
 	}
 	word[wordSize] = '\0';

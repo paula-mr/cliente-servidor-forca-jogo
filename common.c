@@ -8,19 +8,23 @@
 #include <arpa/inet.h>
 
 int parseAddress(const char *addrstr, const char *portstr,
-              struct sockaddr_storage *storage) {
-    if (addrstr == NULL || portstr == NULL) {
+                 struct sockaddr_storage *storage)
+{
+    if (addrstr == NULL || portstr == NULL)
+    {
         return -1;
     }
 
     uint16_t port = (uint16_t)atoi(portstr);
-    if (port == 0) {
+    if (port == 0)
+    {
         return -1;
     }
-    port = htons(port); 
+    port = htons(port);
 
     struct in_addr inaddr4;
-    if (inet_pton(AF_INET, addrstr, &inaddr4)) {
+    if (inet_pton(AF_INET, addrstr, &inaddr4))
+    {
         struct sockaddr_in *addr4 = (struct sockaddr_in *)storage;
         addr4->sin_family = AF_INET;
         addr4->sin_port = port;
@@ -28,8 +32,9 @@ int parseAddress(const char *addrstr, const char *portstr,
         return 0;
     }
 
-    struct in6_addr inaddr6; 
-    if (inet_pton(AF_INET6, addrstr, &inaddr6)) {
+    struct in6_addr inaddr6;
+    if (inet_pton(AF_INET6, addrstr, &inaddr6))
+    {
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)storage;
         addr6->sin6_family = AF_INET6;
         addr6->sin6_port = port;
@@ -42,31 +47,39 @@ int parseAddress(const char *addrstr, const char *portstr,
     return -1;
 }
 
-void printAddress(const struct sockaddr *addr) {
+void printAddress(const struct sockaddr *addr)
+{
     int version;
     char addrstr[INET6_ADDRSTRLEN + 1] = "";
     uint16_t port;
     char str[BUFSZ];
 
-    if (addr->sa_family == AF_INET) {
+    if (addr->sa_family == AF_INET)
+    {
         version = 4;
         struct sockaddr_in *addr4 = (struct sockaddr_in *)addr;
         if (!inet_ntop(AF_INET, &(addr4->sin_addr), addrstr,
-                       INET6_ADDRSTRLEN + 1)) {
+                       INET6_ADDRSTRLEN + 1))
+        {
             printf("Erro ao converter endereço.");
             exit(EXIT_FAILURE);
         }
         port = ntohs(addr4->sin_port);
-    } else if (addr->sa_family == AF_INET6) {
+    }
+    else if (addr->sa_family == AF_INET6)
+    {
         version = 6;
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)addr;
         if (!inet_ntop(AF_INET6, &(addr6->sin6_addr), addrstr,
-                       INET6_ADDRSTRLEN + 1)) {
+                       INET6_ADDRSTRLEN + 1))
+        {
             printf("Erro ao converter endereço.");
             exit(EXIT_FAILURE);
         }
-        port = ntohs(addr6->sin6_port); 
-    } else {
+        port = ntohs(addr6->sin6_port);
+    }
+    else
+    {
         printf("Protocolo desconhecido");
         exit(EXIT_FAILURE);
     }
@@ -76,27 +89,34 @@ void printAddress(const struct sockaddr *addr) {
 }
 
 int initializeSocketAddress(const char *proto, const char *portstr,
-                         struct sockaddr_storage *storage) {
+                            struct sockaddr_storage *storage)
+{
     uint16_t port = (uint16_t)atoi(portstr);
-    if (port == 0) {
+    if (port == 0)
+    {
         return -1;
     }
     port = htons(port);
 
     memset(storage, 0, sizeof(*storage));
-    if (0 == strcmp(proto, "v4")) {
+    if (0 == strcmp(proto, "v4"))
+    {
         struct sockaddr_in *addr4 = (struct sockaddr_in *)storage;
         addr4->sin_family = AF_INET;
         addr4->sin_addr.s_addr = INADDR_ANY;
         addr4->sin_port = port;
         return 0;
-    } else if (0 == strcmp(proto, "v6")) {
+    }
+    else if (0 == strcmp(proto, "v6"))
+    {
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)storage;
         addr6->sin6_family = AF_INET6;
         addr6->sin6_addr = in6addr_any;
         addr6->sin6_port = port;
         return 0;
-    } else {
+    }
+    else
+    {
         return -1;
     }
 }
