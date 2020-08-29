@@ -51,13 +51,13 @@ int main(int argc, char **argv)
 int createSocket(char **argv)
 {	
 	struct sockaddr_storage storage;
-	if (parseAddress(argv[1], argv[2], storage) != 0)
+	if (parseAddress(argv[1], argv[2], &storage) != 0)
 	{
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
 		exit(EXIT_FAILURE);
 	}
 
-	int sock = socket(storage->ss_family, SOCK_STREAM, 0);
+	int sock = socket(storage.ss_family, SOCK_STREAM, 0);
 	if (sock == -1)
 	{
 		printf("Erro ao inicializar socket.");
