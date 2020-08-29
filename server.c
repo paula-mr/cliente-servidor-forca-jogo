@@ -10,19 +10,20 @@
 #include <arpa/inet.h>
 
 #define BUFSZ 1024
+#define VERSION "v4"
 #define WORD "COMUNICACAO"
 
 int createSocket(char **argv);
 int connectToClientSocket(int sock);
 void sendAcknowledgmentMessage(int clientSocket);
 void sendFinalMessage(int clientSocket);
-int sendGuessAnswer(char letter, int sock, char* filledWord);
-int receiveLetter(int clientSocket, char* filledWord);
+int receiveLetter(int clientSocket);
+int sendGuessAnswer(int clientSocket, char letter, char* filledWord);
 
 
 int main(int argc, char **argv) {
-	if (argc < 3) {
-        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
+	if (argc < 2) {
+        printf("Argumentos passados incorretos. Necessário especificar a porta.");
         exit(EXIT_FAILURE);
     }
 
@@ -42,7 +43,8 @@ int main(int argc, char **argv) {
 
         int isWordComplete = 0;
         while (!isWordComplete) {
-            isWordComplete = receiveLetter(clientSocket, filledWord);
+            char letter = receiveLetter(clientSocket);
+            isWordComplete = sendGuessAnswer(clientSocket, letter, filledWord);
         }
 
         close(clientSocket);
@@ -54,7 +56,7 @@ int main(int argc, char **argv) {
 
 int createSocket(char **argv) {
 	struct sockaddr_storage storage;
-	if (initializeSocketAddress(argv[1], argv[2], &storage) != 0) {
+	if (initializeSocketAddress(VERSION, argv[1], &storage) != 0) {
 		printf("Argumentos passados incorretos. Necessário especificar tipo de endereço e porta.");
         exit(EXIT_FAILURE);
 	}
@@ -132,7 +134,7 @@ void sendFinalMessage(int clientSocket) {
     }
 }
 
-int sendGuessAnswer(char letter, int sock, char* filledWord) {
+int sendGuessAnswer(int clientSocket, char letter, char* filledWord) {
     int countOccurrences = 0;
     char buffer[BUFSZ];
     memset(buffer, 0, BUFSZ);
@@ -147,7 +149,7 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
 
     int result = strcmp(WORD, filledWord);
     if (result == 0) {
-        sendFinalMessage(sock);
+        sendFinalMessage(clientSocket);
         return 1;
     } 
 
@@ -155,8 +157,7 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
     buffer[1] = countOccurrences;
     buffer[countOccurrences+2] = '\0';
 
-
-    size_t count = send(sock, buffer, countOccurrences+3, 0);
+    size_t count = send(clientSocket, buffer, countOccurrences+3, 0);
     if (count != countOccurrences+3) {
         printf("Erro ao enviar ocorrências da letra.");
         exit(EXIT_FAILURE);
@@ -165,18 +166,20 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
     return 0;
 }
 
-int receiveLetter(int clientSocket, char* filledWord) {
+char receiveLetter(int clientSocket) {
     char buffer[BUFSZ];
 
     size_t count = 0;
     memset(buffer, 0, BUFSZ);
     
     count = recv(clientSocket, buffer, BUFSZ, 0);
-
-    if (count > 0 && count < 100) {
-        int typeMessage = buffer[0];
-        char letter = buffer[1];
-
-        return sendGuessAnswer(letter, clientSocket, filledWord);
+    if (count > 100) {
+        printf("Erro ao receber letra a ser testada");
+        exit(EXIT_ERROR);
     }
+
+    int typeMessage = buffer[0];
+    char letter = buffer[1];
+
+    return letter;
 }
