@@ -17,7 +17,7 @@ int createSocket(char **argv);
 int connectToClientSocket(int sock);
 void sendAcknowledgmentMessage(int clientSocket);
 void sendFinalMessage(int clientSocket);
-int receiveLetter(int clientSocket);
+char receiveLetter(int clientSocket);
 int sendGuessAnswer(int clientSocket, char letter, char* filledWord);
 
 
@@ -175,7 +175,7 @@ char receiveLetter(int clientSocket) {
     count = recv(clientSocket, buffer, BUFSZ, 0);
     if (count > 100) {
         printf("Erro ao receber letra a ser testada");
-        exit(EXIT_ERROR);
+        exit(EXIT_FAILURE);
     }
 
     int typeMessage = buffer[0];
