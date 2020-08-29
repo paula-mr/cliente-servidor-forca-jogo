@@ -116,12 +116,13 @@ int receiveAnswer(int sock, char letter, char* word) {
 	memset(buffer, 0, BUFSZ);
 
 	size_t count = recv(sock, buffer, BUFSZ, 0);
+	
+	int typeMessage = buffer[0];
 	if (count < 2 || (typeMessage != 3 && typeMessage != 4)) {
 		printf("Erro ao receber resposta do servidor.");
         exit(EXIT_FAILURE);
 	}
 
-	int typeMessage = buffer[0];
 	if (typeMessage == 4) {
 		for (int i=0; i<strlen(word); i++) {
 			if (word[i] == '_')
