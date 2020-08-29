@@ -86,7 +86,7 @@ int createSocket(char **argv)
         exit(EXIT_FAILURE);
     }
 
-    if (listen(sock, 10) != 0)
+    if (listen(sock, 1) != 0)
     {
         printf("Erro ao escutar requisições.");
         exit(EXIT_FAILURE);
