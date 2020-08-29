@@ -17,7 +17,7 @@ O cliente é responsável pela interação com o cliente, exibir a interface e e
 O sistema recebe dois parâmetros referentes ao endereço e â porta do servidor.
 
 # Documentação
-## Servidor
+## Server
 O servidor possui um main, que controla o fluxo de execução e valida se os argumentos foram recebidos de forma correta e a partir destes é criado um socket para o servidor.
 
 Depois, o servidor espera a conexão de algum cliente, quando isso acontece é enviada uma mensagem de confirmação (tipo 1) contendo também o tamanho da palavra e o servidor espera pelos palpites do cliente até completar a palavra. Ao receber um palpite, a letra é validada e é enviado a resposta (tipo 3), a quantidade de ocorrências da letra na palavra e depois as posições da letra na palavra. Ao completar a palavra, o servidor envia a finalização (tipo 4), fecha a conexão com esse cliente e espera uma nova conexão.
@@ -80,7 +80,7 @@ Essa função utiliza a função *send* da biblioteca *sys/socket.h*.
 
 
 
-## Cliente
+## Client
 O cliente possui um main, que controla o fluxo de execução e valida se os argumentos foram recebidos de forma correta e a partir destes se conecta com o servidor.
 
 Depois, o cliente espera uma mensagem de confirmação de conexão com o servidor (tipo 1) contendo também o tamanho da palavra. A partir disso, ele printa em comando uma interface da palavra a ser adivinhada e recebe via terminal as letras a serem enviadas como palpite até receber uma mensagem de tipo 4, que indica a finalização do jogo. Assim, ele finaliza o socket criado e finaliza o programa.
