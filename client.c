@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-int createSocket(char **argv, struct sockaddr_storage *storage);
+int createSocket(char **argv);
 int receiveAcknowledgmentMessage(int sock);
 char guessLetter(int sock);
 int receiveAnswer(int sock, char letter, char *word);
@@ -24,8 +24,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	struct sockaddr_storage storage;
-	int sock = createSocket(argv, &storage);
+	int sock = createSocket(argv);
 
 	int wordSize = receiveAcknowledgmentMessage(sock);
 
@@ -49,8 +48,9 @@ int main(int argc, char **argv)
 	exit(EXIT_SUCCESS);
 }
 
-int createSocket(char **argv, struct sockaddr_storage *storage)
-{
+int createSocket(char **argv)
+{	
+	struct sockaddr_storage storage;
 	if (parseAddress(argv[1], argv[2], storage) != 0)
 	{
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
