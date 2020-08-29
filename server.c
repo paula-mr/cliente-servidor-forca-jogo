@@ -18,6 +18,7 @@ void sendAcknowledgmentMessage(int clientSocket);
 void sendFinalMessage(int clientSocket);
 char receiveLetter(int clientSocket);
 int sendGuessAnswer(int clientSocket, char letter, char *filledWord);
+void initializeWord(char *word);
 
 int main(int argc, char **argv)
 {
@@ -39,8 +40,7 @@ int main(int argc, char **argv)
         printf("Esperando pelo palpite do usuário.\n");
 
         char filledWord[BUFSZ];
-        memset(filledWord, 0, BUFSZ);
-        filledWord[strlen(WORD)] = '\0';
+        initializeWord(filledWord);
 
         int isWordComplete = 0;
         while (!isWordComplete)
@@ -199,4 +199,9 @@ char receiveLetter(int clientSocket)
     char letter = buffer[1];
 
     return letter;
+}
+
+void initializeWord(char *word) {
+    memset(word, 0, BUFSZ);
+    word[strlen(WORD)] = '\0';
 }
