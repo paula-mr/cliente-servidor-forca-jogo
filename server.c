@@ -99,8 +99,7 @@ int connectToClientSocket(int sock) {
         exit(EXIT_FAILURE);
     }
 
-    char clientAddrstr[BUFSZ];
-    addrtostr(clientAddress, clientAddrstr, BUFSZ);
+    printAddress(clientAddress);
     printf("Cliente conectado em %s.\n", clientAddrstr);
 
     return clientSocket;

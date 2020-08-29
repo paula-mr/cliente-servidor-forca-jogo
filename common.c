@@ -46,7 +46,6 @@ void printAddress(const struct sockaddr *addr) {
     int version;
     char addrstr[INET6_ADDRSTRLEN + 1] = "";
     uint16_t port;
-    char str[BUFSZ];
 
     if (addr->sa_family == AF_INET) {
         version = 4;
@@ -71,9 +70,7 @@ void printAddress(const struct sockaddr *addr) {
         exit(EXIT_FAILURE);
     }
 
-    if (str) {
-        snprintf(str, BUFSZ, "IPv%d %s %hu", version, addrstr, port);
-    }
+    snprintf(str, BUFSZ, "IPv%d %s %hu", version, addrstr, port);
 }
 
 int initializeSocketAddress(const char *proto, const char *portstr,
