@@ -79,13 +79,13 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 int receiveAcknowledgmentMessage(int sock) {
 	char buffer[2];
 	memset(buffer, 0, 2);
-	
+
 	printf("Esperando por mensagem de confirmação.\n");
 	size_t count = recv(sock, buffer, 2, 0);
 
 	int typeMessage = buffer[0];
 	if (count != 2 || typeMessage != ACKNOWLEDGMENT_MESSAGE) {
-		printf("Erro ao receber mensagem de confirmação.\n")
+		printf("Erro ao receber mensagem de confirmação.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -113,28 +113,29 @@ char guessLetter(int sock) {
 
 int receiveAnswer(int sock, char letter, char* word) {
 	char buffer[BUFSZ];
-
 	memset(buffer, 0, BUFSZ);
 
 	size_t count = recv(sock, buffer, BUFSZ, 0);
+	if (count < 2 || (typeMessage != 3 && typeMessage != 4)) {
+		printf("Erro ao receber resposta do servidor.");
+        exit(EXIT_FAILURE);
+	}
 
 	int typeMessage = buffer[0];
-
-	if (count < 3) {
-		if (typeMessage == 4) {
-			for (int i=0; i<strlen(word); i++) {
-				if (word[i] == '_')
-					word[i] = letter;
-			}
-		} else {
-			printf("Palavra não possui a letra %c!", letter);
+	if (typeMessage == 4) {
+		for (int i=0; i<strlen(word); i++) {
+			if (word[i] == '_')
+				word[i] = letter;
 		}
 	} else {
 		int letterOccurrences = buffer[1];
-
-		for (int i=0; i<letterOccurrences; i++) {
-			int occurrence = buffer[i+2];
-			word[occurrence] = letter;
+		if (letterOccurrences == 0) {
+			printf("Letra %c não está presente na palavra", letter);
+		} else {
+			for (int i=0; i<letterOccurrences; i++) {
+				int occurrence = buffer[i+2];
+				word[occurrence] = letter;
+			}
 		}
 	}
 

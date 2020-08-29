@@ -151,12 +151,11 @@ int sendGuessAnswer(int clientSocket, char letter, char* filledWord) {
         return 1;
     } 
 
-    buffer[0] = 3;
+    buffer[0] = ANSWER_MESSAGE;
     buffer[1] = countOccurrences;
-    buffer[countOccurrences+2] = '\0';
 
-    size_t count = send(clientSocket, buffer, countOccurrences+3, 0);
-    if (count != countOccurrences+3) {
+    size_t count = send(clientSocket, buffer, countOccurrences+2, 0);
+    if (count != countOccurrences+2) {
         printf("Erro ao enviar ocorrências da letra.");
         exit(EXIT_FAILURE);
     }
