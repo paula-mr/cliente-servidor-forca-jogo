@@ -99,6 +99,10 @@ char guessLetter(int sock) {
 	memset(buffer, 0, 2);
 	printf("\nDigite a letra: ");
 	char letter = getchar();
+
+	// reads and ignores new line character
+	getchar();
+
 	buffer[0] = GUESS_MESSAGE;
 	buffer[1] = letter;
 
@@ -116,7 +120,7 @@ int receiveAnswer(int sock, char letter, char* word) {
 	memset(buffer, 0, BUFSZ);
 
 	size_t count = recv(sock, buffer, BUFSZ, 0);
-	
+
 	int typeMessage = buffer[0];
 	if (count < 2 || (typeMessage != 3 && typeMessage != 4)) {
 		printf("Erro ao receber resposta do servidor.");
@@ -131,7 +135,7 @@ int receiveAnswer(int sock, char letter, char* word) {
 	} else {
 		int letterOccurrences = buffer[1];
 		if (letterOccurrences == 0) {
-			printf("Letra %c não está presente na palavra", letter);
+			printf("Letra %c não está presente na palavra.\n", letter);
 		} else {
 			for (int i=0; i<letterOccurrences; i++) {
 				int occurrence = buffer[i+2];
