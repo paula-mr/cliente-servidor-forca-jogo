@@ -16,6 +16,7 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage);
 int receiveAcknowledgmentMessage(int sock);
 char guessLetter(int sock);
 int receiveAnswer(int sock, char letter, char* word);
+void initializeWord(char* word, int wordSize);
 void printWord(char* word, int wordSize);
 
 int main(int argc, char **argv) {
@@ -30,13 +31,11 @@ int main(int argc, char **argv) {
 	connectSocket(sock, storage);
 
 	int wordSize = receiveAcknowledgmentMessage(sock);
+	
 	char word[BUFSZ];
-	for(int i=0; i<wordSize; i++) {
-		word[i] = '_';
-	}
-	word[wordSize] = '\0';
+	initializeWord(word, wordSize);
 
-	printf("Guess the word!\n");
+	printf("Adivinhe a palavra!\n");
 	printWord(word, wordSize);
 
 	int typeMessage = 1;
@@ -46,7 +45,7 @@ int main(int argc, char **argv) {
 		printWord(word, wordSize);
 	}
 
-	printf("You won!\n");
+	printf("Você ganhou!\n");
 
 	close(sock);
 	exit(EXIT_SUCCESS);
@@ -90,13 +89,6 @@ int receiveAcknowledgmentMessage(int sock) {
 	int wordSize = buffer[1];
 
 	return wordSize;
-}
-
-void printWord(char* word, int wordSize) {
-	for (int i=0; i<wordSize; i++) {
-		printf("%c ", word[i]);
-	}
-	printf("\n");
 }
 
 char guessLetter(int sock) {
@@ -146,4 +138,18 @@ int receiveAnswer(int sock, char letter, char* word) {
 	}
 
 	return typeMessage;
+}
+
+void printWord(char* word, int wordSize) {
+	for (int i=0; i<wordSize; i++) {
+		printf("%c ", word[i]);
+	}
+	printf("\n");
+}
+
+void initializeWord(char* word, int wordSize) {
+	for(int i=0; i<wordSize; i++) {
+		word[i] = '_';
+	}
+	word[wordSize] = '\0';
 }
