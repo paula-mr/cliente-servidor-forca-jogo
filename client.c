@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	char word[BUFSZ];
 	initializeWord(word, wordSize);
 
-	printf("Adivinhe a palavra!\n");
+	printf("Adivinhe a palavra de %d letras!\n", wordSize);
 	printWord(word, wordSize);
 
 	int typeMessage = 1;
