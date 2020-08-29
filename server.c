@@ -165,18 +165,17 @@ int sendGuessAnswer(int clientSocket, char letter, char* filledWord) {
 }
 
 char receiveLetter(int clientSocket) {
-    char buffer[BUFSZ];
-
-    size_t count = 0;
-    memset(buffer, 0, BUFSZ);
+    char buffer[2];
+    memset(buffer, 0, 2);
     
-    count = recv(clientSocket, buffer, BUFSZ, 0);
-    if (count > 100) {
+    size_t count = recv(clientSocket, buffer, 2, 0);
+
+    int typeMessage = buffer[0];
+    if (count != 2 || typeMessage != GUESS_MESSAGE) {
         printf("Erro ao receber letra a ser testada");
         exit(EXIT_FAILURE);
     }
 
-    int typeMessage = buffer[0];
     char letter = buffer[1];
 
     return letter;

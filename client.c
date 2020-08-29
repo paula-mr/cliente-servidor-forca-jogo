@@ -78,15 +78,15 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 
 int receiveAcknowledgmentMessage(int sock) {
 	char buffer[2];
-
 	memset(buffer, 0, 2);
+	
 	printf("Esperando por mensagem de confirmação.\n");
-	size_t count = recv(sock, buffer, strlen(buffer), 0);
+	size_t count = recv(sock, buffer, 2, 0);
 
 	int typeMessage = buffer[0];
 	if (count != 2 || typeMessage != ACKNOWLEDGMENT_MESSAGE) {
-		printf("Erro ao receber mensagem de confirmação.")
-		exit(EXIT_FAILURE)
+		printf("Erro ao receber mensagem de confirmação.\n")
+		exit(EXIT_FAILURE);
 	}
 
 	int wordSize = buffer[1];
@@ -94,17 +94,16 @@ int receiveAcknowledgmentMessage(int sock) {
 }
 
 char guessLetter(int sock) {
-	char buffer[BUFSZ];
+	char buffer[2];
 
-	memset(buffer, 0, BUFSZ);
+	memset(buffer, 0, 2);
 	printf("\nDigite a letra: ");
 	char letter = getchar();
-	buffer[0] = 1;
+	buffer[0] = GUESS_MESSAGE;
 	buffer[1] = letter;
-	buffer[2] = '\0';
 
-	size_t count = send(sock, buffer, 3, 0);
-	if (count != 3) {
+	size_t count = send(sock, buffer, 2, 0);
+	if (count != 2) {
 		printf("Erro ao enviar letra de palpite.");
 		exit(EXIT_FAILURE);
 	}
