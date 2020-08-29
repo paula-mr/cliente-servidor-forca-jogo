@@ -106,13 +106,12 @@ int connectToClientSocket(int sock) {
 }
 
 void sendAcknowledgmentMessage(int clientSocket) {
-    char buffer[BUFSZ];
-    buffer[0] = 1;
+    char buffer[2];
+    buffer[0] = ACKNOWLEDGMENT_MESSAGE;
     buffer[1] = strlen(WORD);
-    buffer[2] = '\0';
 
-    size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
-    if (count != strlen(buffer) + 1) {
+    size_t count = send(clientSocket, buffer, strlen(buffer), 0);
+    if (count != strlen(buffer)) {
         printf("Erro ao mandar mensagem de confirmação.");
         exit(EXIT_FAILURE);
     }

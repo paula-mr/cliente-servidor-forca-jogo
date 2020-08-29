@@ -77,15 +77,19 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 }
 
 int receiveAcknowledgmentMessage(int sock) {
-	char buffer[BUFSZ];
+	char buffer[2];
 
-	memset(buffer, 0, BUFSZ);
+	memset(buffer, 0, 2);
 	printf("Esperando por mensagem de confirmação.\n");
-	size_t count = recv(sock, buffer, BUFSZ, 0);
+	size_t count = recv(sock, buffer, strlen(buffer), 0);
 
 	int typeMessage = buffer[0];
-	int wordSize = buffer[1];
+	if (count != 2 || typeMessage != ACKNOWLEDGMENT_MESSAGE) {
+		printf("Erro ao receber mensagem de confirmação.")
+		exit(EXIT_FAILURE)
+	}
 
+	int wordSize = buffer[1];
 	return wordSize;
 }
 
