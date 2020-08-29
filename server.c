@@ -118,25 +118,24 @@ void sendAcknowledgmentMessage(int clientSocket) {
 }
 
 void sendFinalMessage(int clientSocket) {
-    char buffer[BUFSZ];
-    memset(buffer, 0, BUFSZ);
-    buffer[0] = 4;
-    buffer[1] = '\0';
+    char buffer[1];
+    memset(buffer, 0, 1);
+    buffer[0] = END_MESSAGE;
 
     printf("Palavra adivinhada!\n");
 
-    size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
-    if (count != strlen(buffer) + 1) {
+    size_t count = send(clientSocket, buffer, 1, 0);
+    if (count != 1) {
         printf("Erro ao mandar mensagem de finalização.");
         exit(EXIT_FAILURE);
     }
 }
 
 int sendGuessAnswer(int clientSocket, char letter, char* filledWord) {
-    int countOccurrences = 0;
     char buffer[BUFSZ];
     memset(buffer, 0, BUFSZ);
 
+    int countOccurrences = 0;
     for (int i=0; i<strlen(WORD); i++) {
         if (WORD[i] == letter) {
             filledWord[i] = letter;
