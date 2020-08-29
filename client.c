@@ -10,7 +10,6 @@
 #include <arpa/inet.h>
 
 int createSocket(char **argv, struct sockaddr_storage *storage);
-struct sockaddr *connectSocket(int sock, struct sockaddr_storage storage);
 int receiveAcknowledgmentMessage(int sock);
 char guessLetter(int sock);
 int receiveAnswer(int sock, char letter, char *word);
@@ -27,8 +26,6 @@ int main(int argc, char **argv)
 
 	struct sockaddr_storage storage;
 	int sock = createSocket(argv, &storage);
-
-	connectSocket(sock, storage);
 
 	int wordSize = receiveAcknowledgmentMessage(sock);
 
@@ -67,11 +64,6 @@ int createSocket(char **argv, struct sockaddr_storage *storage)
 		exit(EXIT_FAILURE);
 	}
 
-	return sock;
-}
-
-struct sockaddr *connectSocket(int sock, struct sockaddr_storage storage)
-{
 	struct sockaddr *address = (struct sockaddr *)(&storage);
 	if (connect(sock, address, sizeof(storage)) != 0)
 	{
@@ -81,7 +73,7 @@ struct sockaddr *connectSocket(int sock, struct sockaddr_storage storage)
 
 	printAddress(address);
 
-	return address;
+	return sock;
 }
 
 int receiveAcknowledgmentMessage(int sock)
