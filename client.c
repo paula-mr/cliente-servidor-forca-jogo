@@ -11,13 +11,53 @@
 
 #define BUFSZ 1024
 
+int createSocket(char **argv, struct sockaddr_storage *storage);
+struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage);
+int receiveAcknowledgmentMessage(int sock);
+char guessLetter(int sock);
+int receiveAnswer(int sock, char letter, char* word);
+void printWord(char* word, int wordSize);
+
+int main(int argc, char **argv) {
+	if (argc < 3) {
+		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
+		exit(EXIT_FAILURE);
+	}
+
+	struct sockaddr_storage storage;
+	int sock = createSocket(argv, &storage);
+
+	connectSocket(sock, storage);
+
+	int wordSize = receiveAcknowledgmentMessage(sock);
+	char word[BUFSZ];
+	for(int i=0; i<wordSize; i++) {
+		word[i] = '_';
+	}
+	word[wordSize] = '\0';
+
+	printf("Guess the word!\n");
+	printWord(word, wordSize);
+
+	int typeMessage = 1;
+	while (typeMessage != 4) {
+		char letter = guessLetter(sock);
+		typeMessage = receiveAnswer(sock, letter, word);
+		printWord(word, wordSize);
+	}
+
+	printf("You won!\n");
+
+	close(sock);
+	exit(EXIT_SUCCESS);
+}
+
 int createSocket(char **argv, struct sockaddr_storage *storage) {
-	if (addrparse(argv[1], argv[2], storage) != 0) {
+	if (parseAddress(argv[1], argv[2], storage) != 0) {
 		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
         exit(EXIT_FAILURE);
 	}
 	
-	printf("%d\n", storage->ss_family);
 	int sock = socket(storage->ss_family, SOCK_STREAM, 0);
 	if (sock == -1) {
 		printf("Erro ao inicializar socket.");
@@ -34,9 +74,7 @@ struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage) {
 		exit(EXIT_FAILURE);
 	}
 
-	char addrstr[BUFSZ];
-	addrtostr(address, addrstr, BUFSZ);
-	printf("Conectado em %s.\n", addrstr);
+	printAddress(address);
 
 	return address;
 }
@@ -47,9 +85,6 @@ int receiveAcknowledgmentMessage(int sock) {
 	memset(buffer, 0, BUFSZ);
 	printf("Esperando por mensagem de confirmação.\n");
 	size_t count = recv(sock, buffer, BUFSZ, 0);
-
-	printf("%s\n", buffer);
-	printf("received %u bytes\n", count);
 
 	int typeMessage = buffer[0];
 	int wordSize = buffer[1];
@@ -111,37 +146,4 @@ int receiveAnswer(int sock, char letter, char* word) {
 	}
 
 	return typeMessage;
-}
-
-int main(int argc, char **argv) {
-	if (argc < 3) {
-		printf("Argumentos passados incorretos. Necessário especificar endereço e porta.");
-		exit(EXIT_FAILURE);
-	}
-
-	struct sockaddr_storage storage;
-	int sock = createSocket(argv, &storage);
-	connectSocket(sock, storage);
-
-	int wordSize = receiveAcknowledgmentMessage(sock);
-	char word[BUFSZ];
-	for(int i=0; i<wordSize; i++) {
-		word[i] = '_';
-	}
-	word[wordSize] = '\0';
-
-	printf("Guess the word!\n");
-	printWord(word, wordSize);
-
-	int typeMessage = 1;
-	while (typeMessage != 4) {
-		char letter = guessLetter(sock);
-		typeMessage = receiveAnswer(sock, letter, word);
-		printWord(word, wordSize);
-	}
-
-	printf("You won!\n");
-
-	close(sock);
-	exit(EXIT_SUCCESS);
 }

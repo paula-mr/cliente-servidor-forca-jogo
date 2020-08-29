@@ -5,12 +5,9 @@
 
 #include <arpa/inet.h>
 
-void logexit(const char *msg) {
-	perror(msg);
-	exit(EXIT_FAILURE);
-}
+#define BUFSZ 1024
 
-int addrparse(const char *addrstr, const char *portstr,
+int parseAddress(const char *addrstr, const char *portstr,
               struct sockaddr_storage *storage) {
     if (addrstr == NULL || portstr == NULL) {
         return -1;
@@ -40,13 +37,16 @@ int addrparse(const char *addrstr, const char *portstr,
         return 0;
     }
 
+    printf("%d\n", storage->ss_family);
+
     return -1;
 }
 
-void addrtostr(const struct sockaddr *addr, char *str, size_t strsize) {
+void printAddress(const struct sockaddr *addr) {
     int version;
     char addrstr[INET6_ADDRSTRLEN + 1] = "";
     uint16_t port;
+    char str[BUFSZ];
 
     if (addr->sa_family == AF_INET) {
         version = 4;
@@ -67,12 +67,13 @@ void addrtostr(const struct sockaddr *addr, char *str, size_t strsize) {
     } else {
         logexit("unknown protocol family.");
     }
+
     if (str) {
-        snprintf(str, strsize, "IPv%d %s %hu", version, addrstr, port);
+        snprintf(str, BUFSZ, "IPv%d %s %hu", version, addrstr, port);
     }
 }
 
-int server_sockaddr_init(const char *proto, const char *portstr,
+int initializeSocketAddress(const char *proto, const char *portstr,
                          struct sockaddr_storage *storage) {
     uint16_t port = (uint16_t)atoi(portstr);
     if (port == 0) {

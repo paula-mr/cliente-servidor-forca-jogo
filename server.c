@@ -12,9 +12,49 @@
 #define BUFSZ 1024
 #define WORD "COMUNICACAO"
 
+int createSocket(char **argv);
+int connectToClientSocket(int sock);
+void sendAcknowledgmentMessage(int clientSocket);
+void sendFinalMessage(int clientSocket);
+int sendGuessAnswer(char letter, int sock, char* filledWord);
+int receiveLetter(int clientSocket, char* filledWord);
+
+
+int main(int argc, char **argv) {
+	if (argc < 3) {
+        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
+        exit(EXIT_FAILURE);
+    }
+
+    int sock = createSocket(argv);
+
+    while(1) {
+        printf("Esperando cliente se conectar.\n");
+        int clientSocket = connectToClientSocket(sock);
+        
+        sendAcknowledgmentMessage(clientSocket);
+
+        printf("Esperando pelo palpite do usuário.\n");
+
+        char filledWord[BUFSZ];
+        memset(filledWord, 0, BUFSZ);
+        filledWord[strlen(WORD)] = '\0';
+
+        int isWordComplete = 0;
+        while (!isWordComplete) {
+            isWordComplete = receiveLetter(clientSocket, filledWord);
+        }
+
+        close(clientSocket);
+        printf("Conexão fechada com o cliente.\n");
+    }
+
+	exit(EXIT_SUCCESS);
+}
+
 int createSocket(char **argv) {
 	struct sockaddr_storage storage;
-	if (server_sockaddr_init(argv[1], argv[2], &storage) != 0) {
+	if (initializeSocketAddress(argv[1], argv[2], &storage) != 0) {
 		printf("Argumentos passados incorretos. Necessário especificar tipo de endereço e porta.");
         exit(EXIT_FAILURE);
 	}
@@ -42,8 +82,7 @@ int createSocket(char **argv) {
 		exit(EXIT_FAILURE);
     }
 
-    char addrstr[BUFSZ];
-	addrtostr(address, addrstr, BUFSZ);
+	printAddress(address);
 
     return sock;
 }
@@ -86,7 +125,7 @@ void sendFinalMessage(int clientSocket) {
     buffer[0] = 4;
     buffer[1] = '\0';
 
-    printf("Word complete!\n");
+    printf("Palavra adivinhada!\n");
 
     size_t count = send(clientSocket, buffer, strlen(buffer) + 1, 0);
     if (count != strlen(buffer) + 1) {
@@ -142,36 +181,4 @@ int receiveLetter(int clientSocket, char* filledWord) {
 
         return sendGuessAnswer(letter, clientSocket, filledWord);
     }
-}
-
-int main(int argc, char **argv) {
-	if (argc < 3) {
-        printf("Argumentos passados incorretos. Necessário especificar tipo e porta.");
-        exit(EXIT_FAILURE);
-    }
-
-    int sock = createSocket(argv);
-
-    while(1) {
-        printf("Esperando cliente se conectar.\n");
-        int clientSocket = connectToClientSocket(sock);
-        
-        sendAcknowledgmentMessage(clientSocket);
-
-        int isWordComplete = 0;
-        printf("Esperando pelo palpite do usuário.\n");
-
-        char filledWord[BUFSZ];
-        memset(filledWord, 0, BUFSZ);
-        filledWord[strlen(WORD)] = '\0';
-
-        while (!isWordComplete) {
-            isWordComplete = receiveLetter(clientSocket, filledWord);
-        }
-
-        close(clientSocket);
-        printf("Conexão fechada com o cliente.\n");
-    }
-
-	exit(EXIT_SUCCESS);
 }
