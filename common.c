@@ -53,7 +53,8 @@ void printAddress(const struct sockaddr *addr) {
         struct sockaddr_in *addr4 = (struct sockaddr_in *)addr;
         if (!inet_ntop(AF_INET, &(addr4->sin_addr), addrstr,
                        INET6_ADDRSTRLEN + 1)) {
-            logexit("ntop");
+            printf("Erro ao converter endereço.");
+            exit(EXIT_FAILURE);
         }
         port = ntohs(addr4->sin_port);
     } else if (addr->sa_family == AF_INET6) {
@@ -61,11 +62,13 @@ void printAddress(const struct sockaddr *addr) {
         struct sockaddr_in6 *addr6 = (struct sockaddr_in6 *)addr;
         if (!inet_ntop(AF_INET6, &(addr6->sin6_addr), addrstr,
                        INET6_ADDRSTRLEN + 1)) {
-            logexit("ntop");
+            printf("Erro ao converter endereço.");
+            exit(EXIT_FAILURE);
         }
         port = ntohs(addr6->sin6_port); 
     } else {
-        logexit("unknown protocol family.");
+        printf("Protocolo desconhecido");
+        exit(EXIT_FAILURE);
     }
 
     if (str) {
