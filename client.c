@@ -101,10 +101,8 @@ char guessLetter(int sock)
 
 	memset(buffer, 0, 2);
 	printf("\nDigite a letra: ");
-	char letter = getchar();
-
-	// reads and ignores new line character
-	getchar();
+	char letter;
+	scanf(" %c", &letter);
 
 	buffer[0] = GUESS_MESSAGE;
 	buffer[1] = letter;
