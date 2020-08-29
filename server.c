@@ -9,7 +9,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#define BUFSZ 1024
 #define VERSION "v4"
 #define WORD "COMUNICACAO"
 

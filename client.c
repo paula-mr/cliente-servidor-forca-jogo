@@ -9,8 +9,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#define BUFSZ 1024
-
 int createSocket(char **argv, struct sockaddr_storage *storage);
 struct sockaddr* connectSocket(int sock, struct sockaddr_storage storage);
 int receiveAcknowledgmentMessage(int sock);
@@ -31,7 +29,7 @@ int main(int argc, char **argv) {
 	connectSocket(sock, storage);
 
 	int wordSize = receiveAcknowledgmentMessage(sock);
-	
+
 	char word[BUFSZ];
 	initializeWord(word, wordSize);
 

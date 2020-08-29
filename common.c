@@ -5,8 +5,6 @@
 
 #include <arpa/inet.h>
 
-#define BUFSZ 1024
-
 int parseAddress(const char *addrstr, const char *portstr,
               struct sockaddr_storage *storage) {
     if (addrstr == NULL || portstr == NULL) {
