@@ -72,7 +72,7 @@ void printAddress(const struct sockaddr *addr) {
     }
 
     snprintf(str, BUFSZ, "IPv%d %s %hu", version, addrstr, port);
-    printf(str);
+    printf("Cliente conectado em %s.\n", clientAddrstr);
 }
 
 int initializeSocketAddress(const char *proto, const char *portstr,

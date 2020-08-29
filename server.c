@@ -100,7 +100,6 @@ int connectToClientSocket(int sock) {
     }
 
     printAddress(clientAddress);
-    printf("Cliente conectado em %s.\n", clientAddrstr);
 
     return clientSocket;
 }
@@ -138,8 +137,6 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
     char buffer[BUFSZ];
     memset(buffer, 0, BUFSZ);
 
-    buffer[0] = 3;
-
     for (int i=0; i<strlen(WORD); i++) {
         if (WORD[i] == letter) {
             filledWord[i] = letter;
@@ -148,14 +145,16 @@ int sendGuessAnswer(char letter, int sock, char* filledWord) {
         }
     }
 
-    buffer[1] = countOccurrences;
-    buffer[countOccurrences+2] = '\0';
-
     int result = strcmp(WORD, filledWord);
     if (result == 0) {
         sendFinalMessage(sock);
         return 1;
     } 
+
+    buffer[0] = 3;
+    buffer[1] = countOccurrences;
+    buffer[countOccurrences+2] = '\0';
+
 
     size_t count = send(sock, buffer, countOccurrences+3, 0);
     if (count != countOccurrences+3) {
