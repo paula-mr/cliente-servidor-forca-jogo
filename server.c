@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         }
 
         close(clientSocket);
-        printf("Conexão fechada com o cliente.\n");
+        printf("Conexão fechada com o cliente.\n\n");
     }
 
 	exit(EXIT_SUCCESS);
